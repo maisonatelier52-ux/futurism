@@ -1,11 +1,13 @@
-"use client";
-import { useEffect, useState } from "react";
+// components/AuthorPageResolver.jsx
+// Server Component: picks the author's layout variation and renders it with
+// the author + articles data fetched by the page itself (see
+// app/authors/[slug]/page.jsx). No client-side fetch/loading state --
+// avoids the header/footer-then-content flash the old version had.
 import AuthorTemplate1 from "./author-templates/AuthorTemplate1";
 import AuthorTemplate2 from "./author-templates/AuthorTemplate2";
 import AuthorTemplate3 from "./author-templates/AuthorTemplate3";
 import AuthorTemplate4 from "./author-templates/AuthorTemplate4";
 import { DEFAULT_AUTHOR_ARTICLES } from "@/lib/authorTemplateDefaults";
-import { apiFetch } from "@/lib/apiConfig";
 
 const TEMPLATES = {
   "variation-1": AuthorTemplate1,
@@ -14,40 +16,8 @@ const TEMPLATES = {
   "variation-4": AuthorTemplate4,
 };
 
-export default function AuthorPageResolver({ slug }) {
-  const [data, setData] = useState(null);
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    setNotFound(false);
-
-    apiFetch(`/api/authors/${encodeURIComponent(slug)}?_ts=${Date.now()}`, { cache: "no-store" })
-      .then(async (r) => {
-        if (r.status === 404) {
-          if (active) setNotFound(true);
-          return null;
-        }
-        return r.json();
-      })
-      .then((d) => {
-        if (active && d?.author) setData(d);
-      })
-      .catch(() => {
-        if (active) setNotFound(true);
-      })
-      .finally(() => active && setLoading(false));
-
-    return () => {
-      active = false;
-    };
-  }, [slug]);
-
-  if (loading) return null;
-
-  if (notFound || !data) {
+export default function AuthorPageResolver({ author, articles, pagination }) {
+  if (!author) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6 py-24 text-center">
         <div>
@@ -62,7 +32,6 @@ export default function AuthorPageResolver({ slug }) {
     );
   }
 
-  const { author, articles, pagination } = data;
   const variation = author.layoutVariation || "variation-4";
   const ActiveTemplate = TEMPLATES[variation] || AuthorTemplate4;
 

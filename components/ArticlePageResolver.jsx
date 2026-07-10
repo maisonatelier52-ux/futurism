@@ -1,11 +1,13 @@
-"use client";
-import { useEffect, useState } from "react";
+// components/ArticlePageResolver.jsx
+// Server Component: picks the article's layout variation and renders it
+// with the article data fetched by the page itself (see
+// app/articles/[slug]/page.jsx). No client-side fetch/loading state --
+// avoids the header/footer-then-content flash the old version had.
 import ArticleTemplate1 from "./article-templates/ArticleTemplate1";
 import ArticleTemplate2 from "./article-templates/ArticleTemplate2";
 import ArticleTemplate3 from "./article-templates/ArticleTemplate3";
 import ArticleTemplate4 from "./article-templates/ArticleTemplate4";
 import { DEFAULT_ARTICLE_RELATED_CONTENT } from "@/lib/articleTemplateDefaults";
-import { apiFetch } from "@/lib/apiConfig";
 
 const TEMPLATES = {
   "variation-1": ArticleTemplate1,
@@ -17,7 +19,7 @@ const TEMPLATES = {
 // Normalizes a raw saved article (from the admin form / store) into the
 // `{ category, tag, title, excerpt, author, publishedAt, heroImage,
 // heroCaption, body, sagaSoFar }` shape every template expects.
-function normalizeArticle(raw) {
+export function normalizeArticle(raw) {
   return {
     layoutVariation: raw.layoutVariation || "variation-4",
     category: (raw.categoryName || raw.category || "").toUpperCase(),
@@ -41,40 +43,8 @@ function normalizeArticle(raw) {
   };
 }
 
-export default function ArticlePageResolver({ slug }) {
-  const [article, setArticle] = useState(null);
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    setNotFound(false);
-
-    apiFetch(`/api/articles/${encodeURIComponent(slug)}?_ts=${Date.now()}`, { cache: "no-store" })
-      .then(async (r) => {
-        if (r.status === 404) {
-          if (active) setNotFound(true);
-          return null;
-        }
-        return r.json();
-      })
-      .then((d) => {
-        if (active && d?.article) setArticle(normalizeArticle(d.article));
-      })
-      .catch(() => {
-        if (active) setNotFound(true);
-      })
-      .finally(() => active && setLoading(false));
-
-    return () => {
-      active = false;
-    };
-  }, [slug]);
-
-  if (loading) return null;
-
-  if (notFound || !article) {
+export default function ArticlePageResolver({ article }) {
+  if (!article) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6 py-24 text-center">
         <div>
