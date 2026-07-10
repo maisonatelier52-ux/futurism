@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Bitter", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+/* Bitter Font */
+@font-face {
+  font-family: Inter, system-ui;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/bitter/v40/rax8HiqOu8IVPmn7f4xp.woff2') format('woff2');
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.newspaper-heading,
+.footer-heading {
+  font-family: var(--font-serif);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Admin-only utility classes (scoped — none of these touch body/font-family
+   or anything that affects the public frontend's typography or layout)
+   ────────────────────────────────────────────────────────────────────── */
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
+
+.dnd-dragging { opacity: 0.5; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-toast-in { animation: toast-in 0.18s ease-out; }
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.animate-skeleton { animation: skeleton-pulse 1.4s ease-in-out infinite; }
+
+@keyframes htn-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.htn-ticker-slow   { animation: htn-ticker 42s linear infinite; }
+.htn-ticker-normal { animation: htn-ticker 22s linear infinite; }
+.htn-ticker-fast   { animation: htn-ticker 10s linear infinite; }
