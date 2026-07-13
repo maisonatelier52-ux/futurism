@@ -1,4 +1,6 @@
 'use client';
+
+import Image from 'next/image';
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { apiFetch } from '@/lib/apiConfig';
@@ -34,10 +36,19 @@ function LoginForm() {
   return (
     <div className="min-h-screen bg-[#1a1a2e] flex items-center justify-center px-4">
       <div className="bg-white w-full max-w-sm p-8 shadow-2xl">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-black uppercase tracking-widest text-gray-900">Futurism</h1>
-          <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">Admin Panel</p>
-        </div>
+<div className="mb-8 flex flex-col items-center">
+  <Image
+    src="/images/logo.webp"
+    alt="Futurism Logo"
+    width={260}
+    height={70}
+    priority
+    className="h-auto w-auto"
+  />
+  <p className="mt-3 text-xs text-gray-700 uppercase tracking-widest">
+    Admin Panel
+  </p>
+</div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
