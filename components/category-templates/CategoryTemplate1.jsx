@@ -1,43 +1,56 @@
 // components/category-templates/CategoryTemplate1.jsx
 // Variation 1: Purple hero banner + right "Latest" rail + trending strip + deep dive + newsletter
+// Author names are real links (to /authors/[slug]) whenever the data
+// provides an authorHref. Subcategory tabs are plain labels (no per-tab
+// page exists yet), so they render as text rather than dead links.
 "use client";
+
+import { AuthorByline } from "../shared/ArticleLinks";
 
 function RailItem({ article }) {
   return (
-    <a href={article.href || "#"} className="group flex gap-3 py-3 border-b border-gray-200 last:border-b-0">
-      <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-200 rounded">
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
-      </div>
-      <div className="min-w-0">
-        <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
-          {article.category}
-        </span>
-        <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[13px] font-bold leading-snug text-gray-900 group-hover:underline">
-          {article.title}
-        </h4>
-        <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">By {article.author}</p>
-      </div>
-    </a>
+    <div className="group flex gap-3 py-3 border-b border-gray-200 last:border-b-0">
+      <a href={article.href || "#"} className="flex gap-3 flex-1">
+        <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-200 rounded">
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+        </div>
+        <div className="min-w-0">
+          <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
+            {article.category}
+          </span>
+          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[13px] font-bold leading-snug text-gray-900 group-hover:underline">
+            {article.title}
+          </h4>
+        </div>
+      </a>
+      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5 pl-[76px] -mt-1">
+        <AuthorByline author={article.author} authorHref={article.authorHref} />
+      </p>
+    </div>
   );
 }
 
 function TrendingCard({ article, index }) {
   return (
-    <a href={article.href || "#"} className="group flex flex-col gap-2 min-w-[210px]">
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-200">
-        <span className="absolute top-2 left-2 z-10 bg-indigo-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
-          {String(index + 1).padStart(2, "0")}
+    <div className="group flex flex-col gap-2 min-w-[210px]">
+      <a href={article.href || "#"} className="flex flex-col gap-2">
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-200">
+          <span className="absolute top-2 left-2 z-10 bg-indigo-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+        </div>
+        <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
+          {article.category}
         </span>
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-      </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
-        {article.category}
-      </span>
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline">
-        {article.title}
-      </h3>
-      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {article.author}</p>
-    </a>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline">
+          {article.title}
+        </h3>
+      </a>
+      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+        <AuthorByline author={article.author} authorHref={article.authorHref} />
+      </p>
+    </div>
   );
 }
 
@@ -54,16 +67,18 @@ export default function CategoryTemplate1({ data }) {
         <div className="h-1 w-16 bg-indigo-600 mt-4" />
       </div>
 
-      {/* Subcategory tabs */}
+      {/* Subcategory tabs (plain labels -- no per-tab page yet) */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 mt-6 flex flex-wrap items-center gap-x-8 gap-y-2 border border-gray-200 rounded-lg py-4">
         {tabs.subcategories.map((sub, i) => (
-          <a key={sub} href="#" className={`font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest ${i === 0 ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"} transition-colors`}>
+          <span key={sub} className={`font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest ${i === 0 ? "text-indigo-600" : "text-gray-700"}`}>
             {sub}
-          </a>
+          </span>
         ))}
-        <a href="#" className="ml-auto font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-indigo-600 flex items-center gap-1">
-          See {tabs.extraCount} More →
-        </a>
+        {tabs.extraCount > 0 && (
+          <span className="ml-auto font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-indigo-400">
+            +{tabs.extraCount} more
+          </span>
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
@@ -74,8 +89,8 @@ export default function CategoryTemplate1({ data }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Purple hero banner */}
           <div className="lg:col-span-8">
-            <a href={featured.href || "#"} className="group grid grid-cols-1 md:grid-cols-2 bg-indigo-900 overflow-hidden rounded-lg">
-              <div className="p-8 flex flex-col justify-center text-white">
+            <div className="group grid grid-cols-1 md:grid-cols-2 bg-indigo-900 overflow-hidden rounded-lg">
+              <a href={featured.href || "#"} className="p-8 flex flex-col justify-center text-white">
                 <span className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-indigo-300 mb-3">
                   {featured.category}
                 </span>
@@ -83,16 +98,17 @@ export default function CategoryTemplate1({ data }) {
                   {featured.title}
                 </h2>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs text-indigo-200 mt-4">
-                  By {featured.author} · {featured.date}
+                  <AuthorByline author={featured.author} authorHref={featured.authorHref} className="text-indigo-200" nameClassName="font-semibold text-white" />
+                  {featured.date ? ` · ${featured.date}` : ""}
                 </p>
                 <span className="mt-6 inline-block w-fit bg-white text-indigo-900 font-[family-name:var(--font-scale)] font-bold text-xs uppercase tracking-widest px-4 py-2 rounded">
                   Read Full Story →
                 </span>
-              </div>
-              <div className="h-56 md:h-full overflow-hidden">
+              </a>
+              <a href={featured.href || "#"} className="h-56 md:h-full overflow-hidden block">
                 <img src={featured.image} alt={featured.title} className="w-full h-full object-cover" />
-              </div>
-            </a>
+              </a>
+            </div>
           </div>
 
           {/* Right rail */}
@@ -122,16 +138,20 @@ export default function CategoryTemplate1({ data }) {
           </div>
           <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-3 gap-6">
             {deepDive.items.map((item) => (
-              <a key={item.id} href={item.href || "#"} className="group flex flex-col gap-2 bg-white rounded-lg overflow-hidden border border-gray-200">
-                <div className="w-full aspect-[16/10] overflow-hidden bg-gray-200">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
-                </div>
-                <div className="p-4">
-                  <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-indigo-600">{item.category}</span>
-                  <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline mt-1">{item.title}</h4>
-                  <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">By {item.author}</p>
-                </div>
-              </a>
+              <div key={item.id} className="group flex flex-col gap-2 bg-white rounded-lg overflow-hidden border border-gray-200">
+                <a href={item.href || "#"} className="flex flex-col gap-2 flex-1">
+                  <div className="w-full aspect-[16/10] overflow-hidden bg-gray-200">
+                    <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
+                  </div>
+                  <div className="p-4 pb-0">
+                    <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-indigo-600">{item.category}</span>
+                    <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline mt-1">{item.title}</h4>
+                  </div>
+                </a>
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 px-4 pb-4">
+                  <AuthorByline author={item.author} authorHref={item.authorHref} />
+                </p>
+              </div>
             ))}
           </div>
         </div>

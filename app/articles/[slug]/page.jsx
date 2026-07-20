@@ -1,12 +1,15 @@
 // app/articles/[slug]/page.jsx
 // Renders whichever layout variation was chosen for this article in
 // Admin -> Articles (Variation 1-4). Falls back to Variation 4 (the
-// original default layout) if an article hasn't set one.
+// original default layout) if an article hasn't set one. "Most Popular"
+// and "More in Category" sidebar/grid sections now show real, newest-first
+// articles instead of placeholder content.
 
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import ArticlePageResolver, { normalizeArticle } from '../../../components/ArticlePageResolver';
 import { API_BASE } from '../../../lib/apiConfig';
+import { resolveArticleRelated } from '../../../lib/resolveArticleQuery';
 
 // Always render fresh -- never statically cache this page -- so a newly
 // published/edited article shows up immediately.
@@ -28,11 +31,14 @@ async function getArticle(slug) {
 export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = await getArticle(slug);
+  const related = article
+    ? await resolveArticleRelated(article, API_BASE)
+    : { mostPopular: [], aroundTheWeb: [], moreInCategory: [] };
 
   return (
     <>
       <Header />
-      <ArticlePageResolver article={article} />
+      <ArticlePageResolver article={article} related={related} />
       <Footer />
     </>
   );

@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Save, ExternalLink, Eye, Monitor, Smartphone, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
-import { apiFetch } from "@/lib/apiConfig";
+import { apiFetch, API_BASE } from "@/lib/apiConfig";
 import { getCategories } from "@/lib/categoriesArticlesApi";
 import {
   DEFAULT_CATEGORY_PAGE_CONFIG,
   CATEGORY_TEMPLATE_OPTIONS,
+  defaultQuery,
 } from "@/lib/categoryPageDefaults";
+import { resolveCategoryPageContent } from "@/lib/resolveArticleQuery";
 
 import CategoryTemplate1 from "@/components/category-templates/CategoryTemplate1";
 import CategoryTemplate2 from "@/components/category-templates/CategoryTemplate2";
@@ -23,7 +25,7 @@ const TEMPLATES = {
 };
 
 function uid() {
-  return Math.random().toString(36).slice(2, 9);
+  return `new-${Math.random().toString(36).slice(2, 9)}`;
 }
 
 // ── Scaled preview (same pattern as HomepageBuilder) ─────────────────────────
@@ -101,65 +103,131 @@ function CollapsibleSection({ title, defaultOpen = true, children }) {
   );
 }
 
-// ── Article list editor (used for latest / articles / deepDive.items) ────────
-function ArticleListEditor({ items, onChange, label = "Article" }) {
-  function update(idx, patch) {
-    const next = items.map((it, i) => (i === idx ? { ...it, ...patch } : it));
-    onChange(next);
-  }
-  function remove(idx) {
-    onChange(items.filter((_, i) => i !== idx));
-  }
-  function add() {
-    onChange([
-      ...items,
-      { id: uid(), category: "CATEGORY", title: "New article title", author: "Author Name", image: "/images/img1.webp", href: "#" },
-    ]);
+// ── Query editor: this category page is already scoped to one category, so
+// there's no category picker here -- just auto (newest in this category)
+// vs. pin specific articles. ──────────────────────────────────────────────
+function QueryEditor({ query, onChange, label = "articles", allowPinned = true }) {
+  const q = query || defaultQuery();
+
+  function set(patch) {
+    onChange({ ...q, ...patch });
   }
 
   return (
     <div className="space-y-3">
-      {items.map((item, idx) => (
-        <div key={item.id ?? idx} className="border border-border rounded-lg p-3 space-y-2 bg-surface-soft/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wide text-ink-400">{label} {idx + 1}</span>
-            <button type="button" onClick={() => remove(idx)} className="text-red-500 hover:text-red-600 p-1" title="Remove">
-              <Trash2 size={13} />
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Field label="Category tag">
-              <input className={inputCls} value={item.category || ""} onChange={(e) => update(idx, { category: e.target.value })} />
-            </Field>
-            <Field label="Author">
-              <input className={inputCls} value={item.author || ""} onChange={(e) => update(idx, { author: e.target.value })} />
-            </Field>
-          </div>
-          <Field label="Title">
-            <textarea rows={2} className={inputCls} value={item.title || ""} onChange={(e) => update(idx, { title: e.target.value })} />
-          </Field>
-          <div className="grid grid-cols-2 gap-2">
-            <Field label="Image path/URL">
-              <input className={inputCls} value={item.image || ""} onChange={(e) => update(idx, { image: e.target.value })} />
-            </Field>
-            <Field label="Link (href)">
-              <input className={inputCls} value={item.href || ""} onChange={(e) => update(idx, { href: e.target.value })} />
-            </Field>
-          </div>
-        </div>
-      ))}
-      <button
-        type="button"
-        onClick={add}
-        className="w-full flex items-center justify-center gap-1.5 border border-dashed border-border rounded-lg py-2 text-[12px] font-semibold text-ink-500 hover:text-primary hover:border-primary transition-colors"
-      >
-        <Plus size={13} /> Add {label.toLowerCase()}
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => set({ mode: "auto" })}
+          className={`flex-1 py-2 rounded-lg text-[12px] font-semibold border transition-colors ${
+            q.mode === "auto" ? "border-primary bg-primary-50 text-primary" : "border-border text-ink-500 hover:border-ink-300"
+          }`}
+        >
+          Auto (newest in category)
+        </button>
+        {allowPinned && (
+          <button
+            type="button"
+            onClick={() => set({ mode: "pinned" })}
+            className={`flex-1 py-2 rounded-lg text-[12px] font-semibold border transition-colors ${
+              q.mode === "pinned" ? "border-primary bg-primary-50 text-primary" : "border-border text-ink-500 hover:border-ink-300"
+            }`}
+          >
+            Pin specific {label}
+          </button>
+        )}
+      </div>
+
+      {q.mode === "auto" ? (
+        <Field label={`How many ${label}`}>
+          <input type="number" min={1} max={40} className={inputCls} value={q.limit || 1}
+            onChange={(e) => set({ limit: Math.max(1, parseInt(e.target.value, 10) || 1) })} />
+        </Field>
+      ) : (
+        <PinnedArticlePicker pinnedIds={q.pinnedIds || []} onChange={(ids) => set({ pinnedIds: ids })} />
+      )}
     </div>
   );
 }
 
-// ── Tag list editor (subcategory tabs) ────────────────────────────────────────
+// Lets the admin search/select specific articles by title to pin, in order.
+function PinnedArticlePicker({ pinnedIds, onChange }) {
+  const [search, setSearch] = useState("");
+  const [results, setResults] = useState([]);
+  const [pinnedArticles, setPinnedArticles] = useState([]);
+
+  useEffect(() => {
+    if (!pinnedIds.length) { setPinnedArticles([]); return; }
+    apiFetch(`/api/admin/articles?limit=200`)
+      .then((r) => r.json())
+      .then((d) => {
+        const byId = new Map((d.articles || []).map((a) => [a._id, a]));
+        setPinnedArticles(pinnedIds.map((id) => byId.get(id)).filter(Boolean));
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pinnedIds.join(",")]);
+
+  useEffect(() => {
+    if (!search.trim()) { setResults([]); return; }
+    const t = setTimeout(() => {
+      apiFetch(`/api/admin/articles?search=${encodeURIComponent(search)}&limit=8`)
+        .then((r) => r.json())
+        .then((d) => setResults(d.articles || []))
+        .catch(() => {});
+    }, 250);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  function addArticle(article) {
+    if (pinnedIds.includes(article._id)) return;
+    onChange([...pinnedIds, article._id]);
+    setSearch("");
+    setResults([]);
+  }
+  function removeArticle(id) {
+    onChange(pinnedIds.filter((pid) => pid !== id));
+  }
+
+  return (
+    <div className="space-y-2">
+      {pinnedArticles.length > 0 && (
+        <div className="space-y-1.5">
+          {pinnedArticles.map((a) => (
+            <div key={a._id} className="flex items-center justify-between gap-2 border border-border rounded-lg px-3 py-2 bg-surface-soft/40">
+              <span className="text-[12px] text-ink-800 truncate">{a.title}</span>
+              <button type="button" onClick={() => removeArticle(a._id)} className="text-red-500 hover:text-red-600 shrink-0">
+                <Trash2 size={13} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      <input
+        className={inputCls}
+        placeholder="Search articles by title…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      {results.length > 0 && (
+        <div className="border border-border rounded-lg overflow-hidden divide-y divide-border">
+          {results.map((a) => (
+            <button
+              key={a._id}
+              type="button"
+              onClick={() => addArticle(a)}
+              className="w-full text-left px-3 py-2 text-[12px] text-ink-700 hover:bg-primary-50 transition-colors"
+            >
+              {a.title}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Tag list editor (subcategory tabs, unchanged -- manual) ──────────────────
 function TagListEditor({ items, onChange }) {
   function update(idx, value) {
     const next = [...items];
@@ -193,6 +261,60 @@ function TagListEditor({ items, onChange }) {
   );
 }
 
+// ── Deep Dive items editor (curatorial, manual, unchanged) ───────────────────
+function DeepDiveListEditor({ items, onChange }) {
+  function update(idx, patch) {
+    onChange(items.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+  }
+  function remove(idx) {
+    onChange(items.filter((_, i) => i !== idx));
+  }
+  function add() {
+    onChange([...items, { id: uid(), category: "CATEGORY", title: "New article title", author: "Author Name", image: "/images/img1.webp", href: "#" }]);
+  }
+
+  return (
+    <div className="space-y-3">
+      {items.map((item, idx) => (
+        <div key={item.id ?? idx} className="border border-border rounded-lg p-3 space-y-2 bg-surface-soft/40">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wide text-ink-400">Item {idx + 1}</span>
+            <button type="button" onClick={() => remove(idx)} className="text-red-500 hover:text-red-600 p-1" title="Remove">
+              <Trash2 size={13} />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Field label="Category tag">
+              <input className={inputCls} value={item.category || ""} onChange={(e) => update(idx, { category: e.target.value })} />
+            </Field>
+            <Field label="Author">
+              <input className={inputCls} value={item.author || ""} onChange={(e) => update(idx, { author: e.target.value })} />
+            </Field>
+          </div>
+          <Field label="Title">
+            <textarea rows={2} className={inputCls} value={item.title || ""} onChange={(e) => update(idx, { title: e.target.value })} />
+          </Field>
+          <div className="grid grid-cols-2 gap-2">
+            <Field label="Image path/URL">
+              <input className={inputCls} value={item.image || ""} onChange={(e) => update(idx, { image: e.target.value })} />
+            </Field>
+            <Field label="Link (href)">
+              <input className={inputCls} value={item.href || ""} onChange={(e) => update(idx, { href: e.target.value })} />
+            </Field>
+          </div>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={add}
+        className="w-full flex items-center justify-center gap-1.5 border border-dashed border-border rounded-lg py-2 text-[12px] font-semibold text-ink-500 hover:text-primary hover:border-primary transition-colors"
+      >
+        <Plus size={13} /> Add item
+      </button>
+    </div>
+  );
+}
+
 // ── Main builder ──────────────────────────────────────────────────────────────
 export default function CategoryPageBuilder() {
   const { showToast } = useToast();
@@ -200,6 +322,7 @@ export default function CategoryPageBuilder() {
   const [categories, setCategories] = useState([]);
   const [selectedSlug, setSelectedSlug] = useState("");
   const [config, setConfig] = useState(null);
+  const [resolvedPreview, setResolvedPreview] = useState(null);
   const [loadingCats, setLoadingCats] = useState(true);
   const [loadingConfig, setLoadingConfig] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -228,6 +351,18 @@ export default function CategoryPageBuilder() {
       .catch(() => setConfig({ ...DEFAULT_CATEGORY_PAGE_CONFIG }))
       .finally(() => setLoadingConfig(false));
   }, [selectedSlug]);
+
+  // Re-resolve the live preview (real articles from this category) whenever
+  // the content config or selected category changes.
+  useEffect(() => {
+    if (!config || !selectedSlug) return;
+    let active = true;
+    const category = categories.find((c) => c.slug === selectedSlug);
+    resolveCategoryPageContent(config.content, category, API_BASE, 1, {}).then((resolved) => {
+      if (active) setResolvedPreview(resolved);
+    });
+    return () => { active = false; };
+  }, [config, selectedSlug, categories]);
 
   function setTemplate(value) {
     setConfig((c) => ({ ...c, activeTemplate: value }));
@@ -354,14 +489,15 @@ export default function CategoryPageBuilder() {
               </div>
 
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-ink-400 mb-3">2. Edit content</p>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-ink-400 mb-3">2. Choose what shows in each section</p>
                 <div className="space-y-3">
                   <CollapsibleSection title="Hero (title & description)">
-                    <Field label="Category title">
+                    <p className="text-[11px] text-ink-400 mb-1">Leave blank to use this category's real name/description.</p>
+                    <Field label="Category title override">
                       <input className={inputCls} value={content.hero.title}
                         onChange={(e) => setContentPath("hero", "title", e.target.value)} />
                     </Field>
-                    <Field label="Description">
+                    <Field label="Description override">
                       <textarea rows={4} className={inputCls} value={content.hero.description}
                         onChange={(e) => setContentPath("hero", "description", e.target.value)} />
                     </Field>
@@ -379,45 +515,19 @@ export default function CategoryPageBuilder() {
                   </CollapsibleSection>
 
                   <CollapsibleSection title="Featured / top story" defaultOpen={false}>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Field label="Category tag">
-                        <input className={inputCls} value={content.featured.category}
-                          onChange={(e) => setContentPath("featured", "category", e.target.value)} />
-                      </Field>
-                      <Field label="Author">
-                        <input className={inputCls} value={content.featured.author}
-                          onChange={(e) => setContentPath("featured", "author", e.target.value)} />
-                      </Field>
-                    </div>
-                    <Field label="Title">
-                      <textarea rows={3} className={inputCls} value={content.featured.title}
-                        onChange={(e) => setContentPath("featured", "title", e.target.value)} />
-                    </Field>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Field label="Image path/URL">
-                        <input className={inputCls} value={content.featured.image}
-                          onChange={(e) => setContentPath("featured", "image", e.target.value)} />
-                      </Field>
-                      <Field label="Date (optional)">
-                        <input className={inputCls} value={content.featured.date || ""}
-                          onChange={(e) => setContentPath("featured", "date", e.target.value)} />
-                      </Field>
-                    </div>
-                    <Field label="Link (href)">
-                      <input className={inputCls} value={content.featured.href}
-                        onChange={(e) => setContentPath("featured", "href", e.target.value)} />
-                    </Field>
+                    <QueryEditor query={content.featuredQuery} onChange={(q) => setContent("featuredQuery", q)} label="top story" />
                   </CollapsibleSection>
 
                   <CollapsibleSection title="Latest / trending rail" defaultOpen={false}>
-                    <ArticleListEditor items={content.latest} onChange={(v) => setContent("latest", v)} label="Latest item" />
+                    <QueryEditor query={content.latestQuery} onChange={(q) => setContent("latestQuery", q)} label="latest items" />
                   </CollapsibleSection>
 
                   <CollapsibleSection title="Main articles grid" defaultOpen={false}>
-                    <ArticleListEditor items={content.articles} onChange={(v) => setContent("articles", v)} label="Article" />
+                    <QueryEditor query={content.articlesQuery} onChange={(q) => setContent("articlesQuery", q)} label="articles" allowPinned={false} />
+                    <p className="text-[10.5px] text-ink-400">This grid is paginated on the live page, so it always auto-shows this category's newest articles page by page.</p>
                   </CollapsibleSection>
 
-                  <CollapsibleSection title="Deep dive section" defaultOpen={false}>
+                  <CollapsibleSection title="Deep dive section (curated, manual)" defaultOpen={false}>
                     <Field label="Section title">
                       <input className={inputCls} value={content.deepDive.title}
                         onChange={(e) => setContentPath("deepDive", "title", e.target.value)} />
@@ -426,10 +536,9 @@ export default function CategoryPageBuilder() {
                       <textarea rows={2} className={inputCls} value={content.deepDive.description}
                         onChange={(e) => setContentPath("deepDive", "description", e.target.value)} />
                     </Field>
-                    <ArticleListEditor
+                    <DeepDiveListEditor
                       items={content.deepDive.items}
                       onChange={(v) => setContentPath("deepDive", "items", v)}
-                      label="Deep dive item"
                     />
                   </CollapsibleSection>
 
@@ -447,25 +556,12 @@ export default function CategoryPageBuilder() {
                         onChange={(e) => setContentPath("newsletter", "buttonLabel", e.target.value)} />
                     </Field>
                   </CollapsibleSection>
-
-                  <CollapsibleSection title="Pagination" defaultOpen={false}>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Field label="Current page">
-                        <input type="number" className={inputCls} value={content.pagination.currentPage}
-                          onChange={(e) => setContentPath("pagination", "currentPage", Number(e.target.value) || 1)} />
-                      </Field>
-                      <Field label="Total pages">
-                        <input type="number" className={inputCls} value={content.pagination.totalPages}
-                          onChange={(e) => setContentPath("pagination", "totalPages", Number(e.target.value) || 1)} />
-                      </Field>
-                    </div>
-                  </CollapsibleSection>
                 </div>
               </div>
 
               <div className="p-4 rounded-card bg-surface-soft border border-border">
                 <p className="text-[11.5px] text-ink-500 leading-relaxed">
-                  <strong className="text-ink-700">Note:</strong> Changes apply only to this category's page after you click Save. This category still uses your site's current Header and Footer.
+                  <strong className="text-ink-700">Note:</strong> Featured, Latest, and the main grid now pull real, newest-first articles from this category automatically. Changes apply after you click Save.
                 </p>
               </div>
             </div>
@@ -476,16 +572,20 @@ export default function CategoryPageBuilder() {
             <div className="flex items-center gap-3 px-5 py-3 border-b border-border bg-white flex-shrink-0">
               <Eye size={14} className="text-ink-400" />
               <span className="text-[12.5px] font-semibold text-ink-600">Live Preview</span>
-              <span className="text-[11px] text-ink-400">— updates as you edit</span>
+              <span className="text-[11px] text-ink-400">— shows real articles, updates as you edit</span>
               <div className="ml-auto">
                 <span className="text-[11px] text-ink-400 capitalize">{previewMode} view</span>
               </div>
             </div>
 
             <div className="flex-1 overflow-auto p-4">
-              <ScaledPreview previewMode={previewMode}>
-                <PreviewTemplate key={activeKey} data={content} />
-              </ScaledPreview>
+              {resolvedPreview ? (
+                <ScaledPreview previewMode={previewMode}>
+                  <PreviewTemplate key={activeKey} data={resolvedPreview} />
+                </ScaledPreview>
+              ) : (
+                <p className="text-ink-400 text-sm p-4">Loading preview…</p>
+              )}
             </div>
           </div>
         </div>

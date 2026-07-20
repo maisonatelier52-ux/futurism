@@ -5,6 +5,7 @@ import { Plus, Trash2, Save, ExternalLink, Eye, Monitor, Smartphone } from "luci
 import { useToast } from "@/components/ui/Toast";
 import { apiFetch } from "@/lib/apiConfig";
 import { DEFAULT_FOOTER_CONFIG } from "@/lib/footerDefaults";
+import { getCategories } from "@/lib/categoriesArticlesApi";
 
 import FooterTemplate1 from "@/components/footer-templates/FooterTemplate1";
 import FooterTemplate2 from "@/components/footer-templates/FooterTemplate2";
@@ -34,7 +35,7 @@ const TEMPLATE_OPTIONS = [
 const SOCIAL_PLATFORMS = ["instagram", "twitter", "substack", "facebook", "youtube", "linkedin", "tiktok"];
 
 // ── Reusable link list editor ────────────────────────────────────────────────
-function LinkListEditor({ label, links = [], onChange, hint }) {
+function LinkListEditor({ label, links = [], onChange, hint, categories = [] }) {
   function update(i, field, value) { onChange(links.map((l, idx) => idx === i ? { ...l, [field]: value } : l)); }
   function add() { onChange([...links, { name: "", href: "#" }]); }
   function remove(i) { onChange(links.filter((_, idx) => idx !== i)); }
@@ -43,16 +44,37 @@ function LinkListEditor({ label, links = [], onChange, hint }) {
     if (j < 0 || j >= arr.length) return;
     [arr[i], arr[j]] = [arr[j], arr[i]]; onChange(arr);
   }
+  function addFromCategory(e) {
+    const slug = e.target.value;
+    if (!slug) return;
+    const cat = categories.find((c) => c.slug === slug);
+    if (cat) onChange([...links, { name: cat.name.toUpperCase(), href: `/category/${cat.slug}` }]);
+    e.target.value = "";
+  }
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
         <div>
           <p className="text-[13px] font-semibold text-ink-900">{label}</p>
           {hint && <p className="text-[11px] text-ink-400 mt-0.5">{hint}</p>}
         </div>
-        <button type="button" onClick={add} className="flex items-center gap-1 text-[12px] text-primary hover:underline font-medium">
-          <Plus size={12} /> Add
-        </button>
+        <div className="flex items-center gap-3">
+          {categories.length > 0 && (
+            <select
+              onChange={addFromCategory}
+              defaultValue=""
+              className="text-[11.5px] rounded-lg border border-border bg-white px-2 py-1.5 text-ink-600 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              <option value="" disabled>+ From category…</option>
+              {categories.map((c) => (
+                <option key={c._id || c.slug} value={c.slug}>{c.name}</option>
+              ))}
+            </select>
+          )}
+          <button type="button" onClick={add} className="flex items-center gap-1 text-[12px] text-primary hover:underline font-medium">
+            <Plus size={12} /> Add
+          </button>
+        </div>
       </div>
       <div className="space-y-1.5">
         {links.map((link, i) => (
@@ -150,6 +172,11 @@ export default function FooterBuilder() {
   const [loadError, setLoadError] = useState(null);
   const [previewMode, setPreviewMode] = useState("desktop");
   const [activeTab, setActiveTab]     = useState("template");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getCategories().then(setCategories).catch(() => {});
+  }, []);
 
   useEffect(() => {
     apiFetch("/api/admin/footer")
@@ -283,7 +310,8 @@ export default function FooterBuilder() {
                   links={config.legalLinks || []} onChange={links => set("legalLinks", links)} />
                 <div className="h-px bg-border" />
                 <LinkListEditor label="Category Links (Right Column)"
-                  links={config.categoryLinks || []} onChange={links => set("categoryLinks", links)} />
+                  links={config.categoryLinks || []} onChange={links => set("categoryLinks", links)}
+                  categories={categories} />
               </div>
             )}
 

@@ -24,7 +24,15 @@ export default function AuthorTemplate4({ author, articles, pagination }) {
               {author.role}
             </p>
             {author.bluesky && (
-              <a href="#" className="text-blue-500 hover:text-blue-700 mt-1 text-xl" title="Bluesky">🦋</a>
+              <a
+                href={`https://bsky.app/profile/${author.bluesky.replace(/^@/, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-700 mt-1 text-xl"
+                title="Bluesky"
+              >
+                🦋
+              </a>
             )}
           </div>
         </div>

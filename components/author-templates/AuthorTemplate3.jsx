@@ -65,7 +65,7 @@ export default function AuthorTemplate3({ author, articles, pagination }) {
                 </li>
               ))}
             </ul>
-            <a href="#" className="mt-4 inline-block bg-gray-900 text-white font-[family-name:var(--font-scale)] text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded">
+            <a href="#more-from-author" className="mt-4 inline-block bg-gray-900 text-white font-[family-name:var(--font-scale)] text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded hover:bg-gray-800 transition-colors">
               View All Articles
             </a>
           </div>
@@ -83,14 +83,11 @@ export default function AuthorTemplate3({ author, articles, pagination }) {
       </div>
 
       {/* More From grid */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8 sm:pb-10">
+      <div id="more-from-author" className="max-w-7xl mx-auto px-6 md:px-12 pb-8 sm:pb-10 scroll-mt-24">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600">
             More From {author.name}
           </h2>
-          <a href="#" className="font-[family-name:var(--font-scale)] text-[11px] font-semibold uppercase tracking-widest text-gray-400 border border-gray-300 rounded px-4 py-1.5 hover:bg-gray-50">
-            View All
-          </a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
           {articles.map((a) => <AuthorArticleCard key={a.id} article={a} />)}

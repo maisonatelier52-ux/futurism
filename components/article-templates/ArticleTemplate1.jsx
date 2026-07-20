@@ -5,20 +5,9 @@
 "use client";
 
 import ArticleBody from "./ArticleBody";
+import { AuthorByline, ShareIcons } from "../shared/ArticleLinks";
 import { DEFAULT_SAGA_SO_FAR } from "@/lib/articleTemplateDefaults";
-
-function ShareIcons() {
-  const icons = ["f", "𝕏", "in", "✉", "🔗"];
-  return (
-    <div className="flex items-center gap-2">
-      {icons.map((ic, i) => (
-        <a key={i} href="#" className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-[11px] hover:bg-red-600 transition-colors">
-          {ic}
-        </a>
-      ))}
-    </div>
-  );
-}
+import { SITE_URL } from "@/lib/apiConfig";
 
 export default function ArticleTemplate1({ article, related }) {
   const { mostPopular, aroundTheWeb } = related;
@@ -82,7 +71,7 @@ export default function ArticleTemplate1({ article, related }) {
                 <p className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 mb-3">
                   Share This Story
                 </p>
-                <ShareIcons />
+                <ShareIcons title={article.title} url={`${SITE_URL}${article.href}`} variant="dark" />
               </div>
             </div>
           </aside>
@@ -135,8 +124,10 @@ export default function ArticleTemplate1({ article, related }) {
                         <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">
                           {item.title}
                         </h3>
-                        <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">By {item.author}</p>
                       </a>
+                      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">
+                        <AuthorByline author={item.author} authorHref={item.authorHref} />
+                      </p>
                     </li>
                   ))}
                 </ul>

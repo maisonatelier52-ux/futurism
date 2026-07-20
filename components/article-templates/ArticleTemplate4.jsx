@@ -6,19 +6,22 @@
 "use client";
 
 import ArticleBody from "./ArticleBody";
+import { AuthorByline, CategoryTag } from "../shared/ArticleLinks";
 
 function ArticleCard({ article }) {
   return (
-    <a href={article.href || "#"} className="group flex flex-col gap-2">
-      <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-      </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+    <div className="group flex flex-col gap-2">
+      <a href={article.href || "#"} className="flex flex-col gap-2">
+        <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+        </div>
+        <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+      </a>
       <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-        By <span className="font-semibold text-gray-700 underline">{article.author}</span>
+        <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700" />
       </p>
-    </a>
+    </div>
   );
 }
 
@@ -41,7 +44,7 @@ export default function ArticleTemplate4({ article, related }) {
           {/* LEFT: Article Content */}
           <article className="lg:col-span-8">
             <p className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-2">
-              {article.category}
+              <CategoryTag category={article.category} categoryHref={article.categoryHref} />
             </p>
             {article.tag && (
               <p className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-red-600 mb-3">
@@ -134,10 +137,10 @@ export default function ArticleTemplate4({ article, related }) {
                       <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">
                         {item.title}
                       </h3>
-                      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-                        By <span className="font-semibold text-gray-700 underline">{item.author}</span>
-                      </p>
                     </a>
+                    <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+                      <AuthorByline author={item.author} authorHref={item.authorHref} nameClassName="font-semibold text-gray-700" />
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -181,19 +184,20 @@ export default function ArticleTemplate4({ article, related }) {
       {/* More in Category */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10">
         <div className="mb-6">
-          <a href="#" className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2">
-            More in {(article.category || "").charAt(0) + (article.category || "").slice(1).toLowerCase()}
-          </a>
+          {article.categoryHref ? (
+            <a href={article.categoryHref} className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2 hover:bg-gray-700 transition-colors">
+              More in {(article.category || "").charAt(0) + (article.category || "").slice(1).toLowerCase()}
+            </a>
+          ) : (
+            <span className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2">
+              More in {(article.category || "").charAt(0) + (article.category || "").slice(1).toLowerCase()}
+            </span>
+          )}
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 mb-8">
           {moreInCategory.map((a) => (
             <ArticleCard key={a.id} article={a} />
           ))}
-        </div>
-        <div className="flex justify-center">
-          <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-16 py-3 rounded-full border border-gray-400 text-gray-800 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-200">
-            See More
-          </button>
         </div>
       </div>
     </main>

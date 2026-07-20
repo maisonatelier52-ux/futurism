@@ -1,27 +1,34 @@
 // components/category-templates/CategoryTemplate4.jsx
 // Variation 4 (Default): Centered title + full-width "Latest" grid + pagination + newsletter
+// Author names are real links (to /authors/[slug]) whenever the data
+// provides an authorHref. Subcategory tabs are plain labels (no per-tab
+// page exists yet), so they render as text rather than dead links.
 "use client";
+
+import { AuthorByline } from "../shared/ArticleLinks";
 
 function ArticleCard({ article }) {
   return (
-    <a href={article.href || "#"} className="group flex flex-col gap-2">
-      <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
-        <img
-          src={article.image}
-          alt={article.title}
-          className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-        />
-      </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">
-        {article.category}
-      </span>
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">
-        {article.title}
-      </h3>
+    <div className="group flex flex-col gap-2">
+      <a href={article.href || "#"} className="flex flex-col gap-2">
+        <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
+          <img
+            src={article.image}
+            alt={article.title}
+            className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+          />
+        </div>
+        <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">
+          {article.category}
+        </span>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">
+          {article.title}
+        </h3>
+      </a>
       <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-        By <span className="font-semibold text-gray-700 underline">{article.author}</span>
+        <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700" />
       </p>
-    </a>
+    </div>
   );
 }
 
@@ -63,16 +70,18 @@ export default function CategoryTemplate4({ data }) {
         <hr className="border-gray-200" />
       </div>
 
-      {/* Subcategory Tabs */}
+      {/* Subcategory Tabs (plain labels -- no per-tab page yet) */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
         {tabs.subcategories.map((sub) => (
-          <a key={sub} href="#" className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700 hover:text-red-600 transition-colors">
+          <span key={sub} className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700">
             {sub}
-          </a>
+          </span>
         ))}
-        <a href="#" className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-red-600 transition-colors">
-          See {tabs.extraCount} More Categories +
-        </a>
+        {tabs.extraCount > 0 && (
+          <span className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-400">
+            +{tabs.extraCount} more
+          </span>
+        )}
       </div>
 
       {/* Latest Section Header */}

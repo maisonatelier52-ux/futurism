@@ -7,7 +7,6 @@ import ArticleTemplate1 from "./article-templates/ArticleTemplate1";
 import ArticleTemplate2 from "./article-templates/ArticleTemplate2";
 import ArticleTemplate3 from "./article-templates/ArticleTemplate3";
 import ArticleTemplate4 from "./article-templates/ArticleTemplate4";
-import { DEFAULT_ARTICLE_RELATED_CONTENT } from "@/lib/articleTemplateDefaults";
 
 const TEMPLATES = {
   "variation-1": ArticleTemplate1,
@@ -21,14 +20,19 @@ const TEMPLATES = {
 // heroCaption, body, sagaSoFar }` shape every template expects.
 export function normalizeArticle(raw) {
   return {
+    id: raw._id || raw.id,
+    slug: raw.slug || "",
+    href: raw.slug ? `/articles/${raw.slug}` : "",
     layoutVariation: raw.layoutVariation || "variation-4",
     category: (raw.categoryName || raw.category || "").toUpperCase(),
+    categorySlug: raw.categorySlug || "",
+    categoryHref: raw.categorySlug ? `/category/${raw.categorySlug}` : "",
     tag: (raw.tags && raw.tags[0]) || "",
     title: raw.title || "",
     excerpt: raw.excerpt || "",
     author: {
       name: raw.author?.name || "Futurism Staff",
-      href: raw.author?.href || "#",
+      href: raw.author?.slug ? `/authors/${raw.author.slug}` : raw.author?.href || "#",
       role: raw.author?.role || "",
       avatar: raw.author?.avatar || "/images/author1.webp",
       bio: raw.author?.bio || "",
@@ -43,7 +47,7 @@ export function normalizeArticle(raw) {
   };
 }
 
-export default function ArticlePageResolver({ article }) {
+export default function ArticlePageResolver({ article, related }) {
   if (!article) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6 py-24 text-center">
@@ -62,5 +66,5 @@ export default function ArticlePageResolver({ article }) {
   const variation = article.layoutVariation || "variation-4";
   const ActiveTemplate = TEMPLATES[variation] || ArticleTemplate4;
 
-  return <ActiveTemplate article={article} related={DEFAULT_ARTICLE_RELATED_CONTENT} />;
+  return <ActiveTemplate article={article} related={related || { mostPopular: [], aroundTheWeb: [], moreInCategory: [] }} />;
 }

@@ -3,22 +3,30 @@
 // No single hero dominance -- 2-row mosaic grid (1 large + 2 medium, then
 // 3 equal), latest news strip, trending sidebar, category ribbons, mixed
 // editorial feed. Content-driven via the `data` prop.
+// Author names and category tags are real links (to /authors/[slug] and
+// /category/[slug]) whenever the data provides an href.
 "use client";
+
+import { AuthorByline } from "../shared/ArticleLinks";
 
 function MosaicCard({ article, size = "medium" }) {
   const aspect = size === "large" ? "aspect-[16/10]" : size === "medium" ? "aspect-[4/3]" : "aspect-square";
   const titleSize = size === "large" ? "text-2xl md:text-3xl" : size === "medium" ? "text-lg" : "text-sm";
   return (
-    <a href={article.href || "#"} className="group flex flex-col gap-2">
-      <div className={`w-full ${aspect} overflow-hidden bg-gray-100`}>
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-      </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-      <h3 className={`font-[family-name:var(--font-owners-xnarrow)] ${titleSize} font-black uppercase leading-tight text-gray-900 group-hover:underline`}>
-        {article.title}
-      </h3>
-      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {article.author}</p>
-    </a>
+    <div className="group flex flex-col gap-2">
+      <a href={article.href || "#"} className="flex flex-col gap-2">
+        <div className={`w-full ${aspect} overflow-hidden bg-gray-100`}>
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+        </div>
+        <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
+        <h3 className={`font-[family-name:var(--font-owners-xnarrow)] ${titleSize} font-black uppercase leading-tight text-gray-900 group-hover:underline`}>
+          {article.title}
+        </h3>
+      </a>
+      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+        <AuthorByline author={article.author} authorHref={article.authorHref} />
+      </p>
+    </div>
   );
 }
 
@@ -56,7 +64,7 @@ function LatestNewsStrip({ latest }) {
       </div>
       <div className="flex gap-6 overflow-x-auto pb-2">
         {latest.map((story) => (
-          <a key={story.id} href="#" className="group flex flex-col gap-2 min-w-[180px]">
+          <a key={story.id} href={story.href || "#"} className="group flex flex-col gap-2 min-w-[180px]">
             <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
               {story.image && <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />}
             </div>
@@ -79,10 +87,14 @@ function TrendingSidebar({ latest }) {
         {latest.slice(0, 5).map((story, i) => (
           <li key={story.id} className="py-2.5 flex gap-2">
             <span className="text-red-600 font-black text-sm">{String(i + 1).padStart(2, "0")}</span>
-            <a href="#" className="group">
-              <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
-              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">By {story.author}</p>
-            </a>
+            <div>
+              <a href={story.href || "#"} className="group">
+                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
+              </a>
+              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">
+                <AuthorByline author={story.author} authorHref={story.authorHref} />
+              </p>
+            </div>
           </li>
         ))}
       </ul>
@@ -119,10 +131,10 @@ function MixedFeed({ feed }) {
       </div>
       <ul className="divide-y divide-dashed divide-gray-300">
         {feed.map((article, i) => (
-          <li key={article.id}>
+          <li key={article.id} className={`flex gap-4 py-4 items-start ${i % 2 === 1 ? "flex-row-reverse text-right" : ""}`}>
             <a
               href={article.href || "#"}
-              className={`group flex gap-4 py-4 items-start ${i % 2 === 1 ? "flex-row-reverse text-right" : ""}`}
+              className="group flex gap-4 flex-1"
             >
               <div className="flex-shrink-0 w-36 sm:w-48 aspect-[4/3] overflow-hidden bg-gray-100">
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
@@ -130,7 +142,9 @@ function MixedFeed({ feed }) {
               <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
                 <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg sm:text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
-                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {article.author}</p>
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+                  <AuthorByline author={article.author} authorHref={article.authorHref} />
+                </p>
               </div>
             </a>
           </li>

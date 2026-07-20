@@ -1,42 +1,53 @@
 // components/category-templates/CategoryTemplate3.jsx
 // Variation 3: Stacked hero + right "Latest" rail + paginated articles grid + dark signup block
+// Author names are real links (to /authors/[slug]) whenever the data
+// provides an authorHref. Subcategory tabs are plain labels (no per-tab
+// page exists yet), so they render as text rather than dead links.
 "use client";
+
+import { AuthorByline } from "../shared/ArticleLinks";
 
 function RailItem({ article }) {
   return (
-    <a href={article.href || "#"} className="group flex gap-3 py-3 border-b border-gray-200 last:border-b-0">
-      <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-200">
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
-      </div>
-      <div className="min-w-0">
-        <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
-          {article.category}
-        </span>
-        <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline uppercase">
-          {article.title}
-        </h4>
-        <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">By {article.author}</p>
-      </div>
-    </a>
+    <div className="group flex gap-3 py-3 border-b border-gray-200 last:border-b-0">
+      <a href={article.href || "#"} className="flex gap-3 flex-1">
+        <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-200">
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+        </div>
+        <div className="min-w-0">
+          <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
+            {article.category}
+          </span>
+          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline uppercase">
+            {article.title}
+          </h4>
+        </div>
+      </a>
+      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5 pl-[76px] -mt-2">
+        <AuthorByline author={article.author} authorHref={article.authorHref} />
+      </p>
+    </div>
   );
 }
 
 function GridCard({ article }) {
   return (
-    <a href={article.href || "#"} className="group flex flex-col gap-2">
-      <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-      </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
-        {article.category}
-      </span>
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">
-        {article.title}
-      </h3>
+    <div className="group flex flex-col gap-2">
+      <a href={article.href || "#"} className="flex flex-col gap-2">
+        <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+        </div>
+        <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
+          {article.category}
+        </span>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">
+          {article.title}
+        </h3>
+      </a>
       <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-        By <span className="font-semibold text-gray-700 underline">{article.author}</span>
+        <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700" />
       </p>
-    </a>
+    </div>
   );
 }
 
@@ -72,16 +83,18 @@ export default function CategoryTemplate3({ data }) {
         </p>
       </div>
 
-      {/* Subcategory tabs */}
+      {/* Subcategory tabs (plain labels -- no per-tab page yet) */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 mt-6 pb-4 border-b border-gray-200 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
         {tabs.subcategories.map((sub) => (
-          <a key={sub} href="#" className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700 hover:text-red-600">
+          <span key={sub} className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700">
             {sub}
-          </a>
+          </span>
         ))}
-        <a href="#" className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-400">
-          See {tabs.extraCount} More Categories +
-        </a>
+        {tabs.extraCount > 0 && (
+          <span className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-400">
+            +{tabs.extraCount} more
+          </span>
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
@@ -92,21 +105,25 @@ export default function CategoryTemplate3({ data }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-10">
           {/* Stacked hero */}
           <div className="lg:col-span-8">
-            <a href={featured.href || "#"} className="group block">
-              <div className="w-full aspect-[16/9] overflow-hidden bg-gray-200 relative">
-                <span className="absolute top-3 left-3 z-10 bg-black text-white text-[10px] font-bold uppercase tracking-widest px-2 py-1">
+            <div className="group flex flex-col">
+              <a href={featured.href || "#"} className="block">
+                <div className="w-full aspect-[16/9] overflow-hidden bg-gray-200 relative">
+                  <span className="absolute top-3 left-3 z-10 bg-black text-white text-[10px] font-bold uppercase tracking-widest px-2 py-1">
+                    {featured.category}
+                  </span>
+                  <img src={featured.image} alt={featured.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
+                </div>
+                <span className="block font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600 mt-3">
                   {featured.category}
                 </span>
-                <img src={featured.image} alt={featured.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
-              </div>
-              <span className="block font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600 mt-3">
-                {featured.category}
-              </span>
-              <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-1">
-                {featured.title}
-              </h2>
-              <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">By {featured.author}</p>
-            </a>
+                <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-1">
+                  {featured.title}
+                </h2>
+              </a>
+              <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">
+                <AuthorByline author={featured.author} authorHref={featured.authorHref} />
+              </p>
+            </div>
           </div>
 
           {/* Right rail */}

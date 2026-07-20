@@ -53,9 +53,6 @@ export default function HeaderTemplate4({ config }) {
             </a>
           ))}
         </div>
-        <a href="#" className="px-2 xs:px-3 md:px-4 py-2.5 text-white/50 hover:text-white flex-shrink-0 border-l border-white/10 text-[11px] md:text-xs whitespace-nowrap flex items-center">
-          View All →
-        </a>
       </div>
 
       {/* Mobile menu */}

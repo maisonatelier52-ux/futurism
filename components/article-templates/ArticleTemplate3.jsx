@@ -7,6 +7,7 @@
 
 import { useState } from "react";
 import ArticleBody, { extractHeadings } from "./ArticleBody";
+import { AuthorByline } from "../shared/ArticleLinks";
 
 export default function ArticleTemplate3({ article, related }) {
   const { mostPopular, aroundTheWeb, moreInCategory } = related;
@@ -133,8 +134,10 @@ export default function ArticleTemplate3({ article, related }) {
                       <a href={item.href || "#"} className="group block">
                         <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600 block mb-1">{item.category}</span>
                         <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">{item.title}</h3>
-                        <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">By {item.author}</p>
                       </a>
+                      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">
+                        <AuthorByline author={item.author} authorHref={item.authorHref} />
+                      </p>
                     </li>
                   ))}
                 </ul>

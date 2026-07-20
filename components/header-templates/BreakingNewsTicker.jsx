@@ -34,14 +34,6 @@ export default function BreakingNewsTicker({ items = [], dark = false, accentCol
           </a>
         ))}
       </div>
-
-      {/* View all */}
-      <a
-        href="#"
-        className={`px-4 py-2.5 flex-shrink-0 font-semibold whitespace-nowrap flex items-center gap-1 ${dark ? 'text-white/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'} border-l ${border}`}
-      >
-        View All →
-      </a>
     </div>
   );
 }

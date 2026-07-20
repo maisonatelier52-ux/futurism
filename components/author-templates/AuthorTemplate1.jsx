@@ -5,15 +5,28 @@
 // sidebar + article grid + pagination.
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AuthorArticleCard, AuthorPagination } from "./AuthorShared";
 import { DEFAULT_AUTHOR_STATS, DEFAULT_AUTHOR_QUOTE, DEFAULT_AUTHOR_CATEGORY_FILTERS } from "@/lib/authorTemplateDefaults";
 
 export default function AuthorTemplate1({ author, articles, pagination }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const stats = author.stats?.education ? author.stats : DEFAULT_AUTHOR_STATS;
   const quote = author.quote || DEFAULT_AUTHOR_QUOTE;
   const filters = author.categoryFilters?.length ? author.categoryFilters : DEFAULT_AUTHOR_CATEGORY_FILTERS;
-  const [activeFilter, setActiveFilter] = useState(filters[0]);
+  const activeFilter = searchParams.get("category") || filters[0];
+
+  function selectFilter(cat) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (cat === filters[0]) {
+      params.delete("category");
+    } else {
+      params.set("category", cat);
+    }
+    params.delete("page"); // reset pagination when changing filter
+    router.push(`?${params.toString()}`);
+  }
 
   return (
     <main className="min-h-screen bg-white">
@@ -104,9 +117,6 @@ export default function AuthorTemplate1({ author, articles, pagination }) {
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase tracking-wide text-white">Notable Works</h2>
-              <a href="#" className="font-[family-name:var(--font-scale)] text-[11px] font-semibold uppercase tracking-widest text-gray-300 border border-gray-600 rounded px-4 py-1.5 hover:bg-white hover:text-gray-900 transition-colors">
-                View All Articles →
-              </a>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
               {author.notableWorks.slice(0, 3).map((work, i) => (
@@ -127,7 +137,7 @@ export default function AuthorTemplate1({ author, articles, pagination }) {
           <aside className="lg:col-span-3">
             <div className="lg:sticky lg:top-4 border border-gray-200 rounded-lg overflow-hidden">
               {filters.map((cat) => (
-                <button key={cat} onClick={() => setActiveFilter(cat)}
+                <button key={cat} onClick={() => selectFilter(cat)}
                   className={`w-full text-left px-4 py-2.5 text-sm border-b border-gray-100 last:border-b-0 transition-colors ${
                     activeFilter === cat ? "bg-gray-900 text-white font-semibold" : "text-gray-600 hover:bg-gray-50"
                   }`}>
@@ -135,9 +145,6 @@ export default function AuthorTemplate1({ author, articles, pagination }) {
                 </button>
               ))}
             </div>
-            <a href="#" className="mt-4 block text-center border border-gray-300 rounded-lg py-2.5 font-[family-name:var(--font-scale)] text-xs font-bold uppercase tracking-widest text-gray-700 hover:bg-gray-50">
-              View All Articles →
-            </a>
           </aside>
           <div className="lg:col-span-9">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">

@@ -5,6 +5,7 @@ import { Plus, Trash2, Save, ExternalLink, Eye, Settings2, Monitor, Smartphone }
 import { useToast } from "@/components/ui/Toast";
 import { apiFetch } from "@/lib/apiConfig";
 import { DEFAULT_HEADER_CONFIG } from "@/lib/headerDefaults";
+import { getCategories } from "@/lib/categoriesArticlesApi";
 
 // Import all templates for live preview
 import HeaderTemplate1 from "@/components/header-templates/HeaderTemplate1";
@@ -38,7 +39,7 @@ const TEMPLATE_OPTIONS = [
 const SOCIAL_PLATFORMS = ["instagram", "twitter", "substack", "facebook", "youtube", "linkedin", "tiktok"];
 
 // ── Reusable link list editor ────────────────────────────────────────────────
-function LinkListEditor({ label, links = [], onChange, hint, addLabel = "Add Link" }) {
+function LinkListEditor({ label, links = [], onChange, hint, addLabel = "Add Link", categories = [] }) {
   function update(i, field, value) { onChange(links.map((l, idx) => idx === i ? { ...l, [field]: value } : l)); }
   function add() { onChange([...links, { name: "", href: "#" }]); }
   function remove(i) { onChange(links.filter((_, idx) => idx !== i)); }
@@ -47,17 +48,38 @@ function LinkListEditor({ label, links = [], onChange, hint, addLabel = "Add Lin
     if (j < 0 || j >= arr.length) return;
     [arr[i], arr[j]] = [arr[j], arr[i]]; onChange(arr);
   }
+  function addFromCategory(e) {
+    const slug = e.target.value;
+    if (!slug) return;
+    const cat = categories.find((c) => c.slug === slug);
+    if (cat) onChange([...links, { name: cat.name.toUpperCase(), href: `/category/${cat.slug}` }]);
+    e.target.value = "";
+  }
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
         <div>
           <p className="text-[13px] font-semibold text-ink-900">{label}</p>
           {hint && <p className="text-[11px] text-ink-400 mt-0.5">{hint}</p>}
         </div>
-        <button type="button" onClick={add} className="flex items-center gap-1 text-[12px] text-primary hover:underline font-medium">
-          <Plus size={12} /> {addLabel}
-        </button>
+        <div className="flex items-center gap-3">
+          {categories.length > 0 && (
+            <select
+              onChange={addFromCategory}
+              defaultValue=""
+              className="text-[11.5px] rounded-lg border border-border bg-white px-2 py-1.5 text-ink-600 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              <option value="" disabled>+ From category…</option>
+              {categories.map((c) => (
+                <option key={c._id || c.slug} value={c.slug}>{c.name}</option>
+              ))}
+            </select>
+          )}
+          <button type="button" onClick={add} className="flex items-center gap-1 text-[12px] text-primary hover:underline font-medium">
+            <Plus size={12} /> {addLabel}
+          </button>
+        </div>
       </div>
       <div className="space-y-1.5">
         {links.map((link, i) => (
@@ -281,6 +303,11 @@ export default function HeaderBuilder() {
   const [loadError, setLoadError] = useState(null);
   const [previewMode, setPreviewMode] = useState("desktop"); // desktop | mobile
   const [activeTab, setActiveTab] = useState("template");   // template | nav | social | colors | extras
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getCategories().then(setCategories).catch(() => {});
+  }, []);
 
   useEffect(() => {
     apiFetch("/api/admin/header")
@@ -405,9 +432,10 @@ export default function HeaderBuilder() {
               <div className="space-y-6">
                 <LinkListEditor
                   label="Main Navigation Links"
-                  hint="Row 1 — AI, SOCIETY, HEALTH…"
+                  hint="Row 1 — AI, SOCIETY, HEALTH… (pick from a real category, or type your own label/path)"
                   links={config.mainLinks || []}
                   onChange={links => set("mainLinks", links)}
+                  categories={categories}
                 />
                 <div className="h-px bg-border" />
                 <LinkListEditor

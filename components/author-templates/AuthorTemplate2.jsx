@@ -105,9 +105,6 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
               <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-base sm:text-lg font-black uppercase text-white">
                 Latest From <span className="text-red-500">{author.name?.split(" ")[0] || ""}</span>
               </h2>
-              <a href="#" className="font-[family-name:var(--font-scale)] text-[11px] font-semibold uppercase tracking-widest text-gray-300 border border-gray-600 rounded px-4 py-1.5 hover:bg-white hover:text-gray-900 transition-colors">
-                View All Articles →
-              </a>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {latest.map((work, i) => (
@@ -134,9 +131,6 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
           <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600">
             More From {author.name}
           </h2>
-          <a href="#" className="font-[family-name:var(--font-scale)] text-[11px] font-semibold uppercase tracking-widest text-gray-400 border border-gray-300 rounded px-4 py-1.5 hover:bg-gray-50">
-            View All ▾
-          </a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
           {articles.map((a) => <AuthorArticleCard key={a.id} article={a} />)}

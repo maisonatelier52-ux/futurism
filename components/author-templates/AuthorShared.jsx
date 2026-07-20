@@ -1,7 +1,12 @@
 // components/author-templates/AuthorShared.jsx
 // Small shared pieces (article card + pagination) reused by all 4 author
 // page templates, so grid/pagination markup and behavior stay consistent.
+// The category tag is a real link to /category/[slug] when the data
+// provides one; the author byline is intentionally omitted here since
+// these cards only ever appear on that same author's own page.
 "use client";
+
+import { CategoryTag } from "../shared/ArticleLinks";
 
 export function AuthorArticleCard({ article }) {
   return (
@@ -13,17 +18,14 @@ export function AuthorArticleCard({ article }) {
           className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
         />
       </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">
-        {article.category}
-      </span>
+      <CategoryTag
+        category={article.category}
+        categoryHref={article.categoryHref}
+        className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1"
+      />
       <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm sm:text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">
         {article.title}
       </h3>
-      {article.author && (
-        <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-          By <span className="font-semibold text-gray-700 underline">{article.author}</span>
-        </p>
-      )}
     </a>
   );
 }

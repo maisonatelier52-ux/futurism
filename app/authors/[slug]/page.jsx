@@ -1,7 +1,9 @@
 // app/authors/[slug]/page.jsx
 // Renders whichever layout variation was chosen for this author in
 // Admin -> Authors (Variation 1-4). Falls back to Variation 4 (the
-// original default layout) if an author hasn't set one.
+// original default layout) if an author hasn't set one. Real category
+// names are injected as the category-filter sidebar options (Variation 1)
+// so filtering actually matches real categories instead of placeholder guesses.
 
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
@@ -13,9 +15,11 @@ import { API_BASE } from '../../../lib/apiConfig';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-async function getAuthorData(slug) {
+async function getAuthorData(slug, page, category) {
   try {
-    const res = await fetch(`${API_BASE}/api/authors/${encodeURIComponent(slug)}`, { cache: 'no-store' });
+    const params = new URLSearchParams({ page: String(page) });
+    if (category) params.set('category', category);
+    const res = await fetch(`${API_BASE}/api/authors/${encodeURIComponent(slug)}?${params.toString()}`, { cache: 'no-store' });
     if (!res.ok) return { author: null, articles: [], pagination: { currentPage: 1, totalPages: 1 } };
     const d = await res.json();
     return {
@@ -28,15 +32,36 @@ async function getAuthorData(slug) {
   }
 }
 
-// Next.js 16: `params` is a Promise in Server Components and must be awaited.
-export default async function AuthorPage({ params }) {
+async function getCategoryNames() {
+  try {
+    const res = await fetch(`${API_BASE}/api/categories`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    const d = await res.json();
+    return (d.categories || []).map((c) => c.name);
+  } catch {
+    return [];
+  }
+}
+
+// Next.js 16: `params`/`searchParams` are Promises in Server Components and must be awaited.
+export default async function AuthorPage({ params, searchParams }) {
   const { slug } = await params;
-  const { author, articles, pagination } = await getAuthorData(slug);
+  const { page: pageParam, category } = (await searchParams) || {};
+  const page = Math.max(1, parseInt(pageParam || '1', 10) || 1);
+
+  const [{ author, articles, pagination }, categoryNames] = await Promise.all([
+    getAuthorData(slug, page, category),
+    getCategoryNames(),
+  ]);
+
+  const authorWithFilters = author && !author.categoryFilters?.length && categoryNames.length
+    ? { ...author, categoryFilters: ['All Articles', ...categoryNames] }
+    : author;
 
   return (
     <>
       <Header />
-      <AuthorPageResolver author={author} articles={articles} pagination={pagination} />
+      <AuthorPageResolver author={authorWithFilters} articles={articles} pagination={pagination} />
       <Footer />
     </>
   );

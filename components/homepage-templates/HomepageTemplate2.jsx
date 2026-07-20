@@ -3,10 +3,13 @@
 // Full-width hero banner (rotates through hero+secondary as slides),
 // category icon row, top stories grid, latest news strip, category
 // sections, the feed. Content-driven via the `data` prop.
+// Author names and category tags are real links (to /authors/[slug] and
+// /category/[slug]) whenever the data provides an href.
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { AuthorByline, CategoryTag } from "../shared/ArticleLinks";
 
 function HeroCarousel({ hero, secondary }) {
   const slides = [hero, ...secondary].filter(Boolean);
@@ -19,21 +22,27 @@ function HeroCarousel({ hero, secondary }) {
 
   return (
     <div className="relative w-full aspect-[16/8] md:aspect-[16/6] overflow-hidden bg-gray-900 group">
-      <img src={active.image} alt={active.title} className="w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <a href={active.href || "#"} className="absolute inset-0">
+        <img src={active.image} alt={active.title} className="w-full h-full object-cover" />
+      </a>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
       <div className="absolute bottom-0 left-0 p-6 md:p-10 max-w-2xl">
         <span className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-red-400">
           {active.category}
         </span>
-        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl md:text-4xl font-black uppercase leading-tight text-white mt-2">
-          {active.title}
-        </h2>
+        <a href={active.href || "#"}>
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl md:text-4xl font-black uppercase leading-tight text-white mt-2 hover:underline">
+            {active.title}
+          </h2>
+        </a>
         {active.excerpt && (
           <p className="font-[family-name:var(--font-bitter)] italic text-white/80 text-sm md:text-base mt-3 max-w-xl">
             "{active.excerpt}"
           </p>
         )}
-        <p className="font-[family-name:var(--font-owners-text)] text-xs text-white/60 mt-3">By {active.author}</p>
+        <p className="font-[family-name:var(--font-owners-text)] text-xs text-white/60 mt-3">
+          <AuthorByline author={active.author} authorHref={active.authorHref} className="text-white/60" nameClassName="font-semibold text-white/90" />
+        </p>
         <a href={active.href || "#"} className="inline-block mt-5 bg-white text-black font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-5 py-2.5 rounded">
           Read More
         </a>
@@ -42,7 +51,7 @@ function HeroCarousel({ hero, secondary }) {
         <button
           onClick={next}
           aria-label="Next slide"
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors z-10"
         >
           <ChevronRight size={18} />
         </button>
@@ -56,17 +65,23 @@ function HeroCarousel({ hero, secondary }) {
   );
 }
 
-function CategoryIconRow() {
-  const icons = ["AI", "SOCIETY", "HEALTH", "MACHINES", "SCIENCE", "SPACE", "TRANSPORT"];
+// Quick nav row linking to real category pages. `categories` comes from
+// the live category list (see resolver/page); falls back to a static
+// placeholder set only if none was provided.
+function CategoryIconRow({ categories }) {
+  const items = categories?.length
+    ? categories
+    : ["AI", "SOCIETY", "HEALTH", "MACHINES", "SCIENCE", "SPACE", "TRANSPORT"].map((label) => ({ name: label, slug: "" }));
+
   return (
     <div className="flex items-center justify-center gap-8 md:gap-12 py-6 flex-wrap">
-      {icons.map((label) => (
-        <a key={label} href="#" className="flex flex-col items-center gap-2 group">
+      {items.map((cat) => (
+        <a key={cat.slug || cat.name} href={cat.slug ? `/category/${cat.slug}` : "#"} className="flex flex-col items-center gap-2 group">
           <span className="w-11 h-11 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 group-hover:border-red-600 group-hover:text-red-600 transition-colors text-[10px] font-bold">
-            {label.slice(0, 2)}
+            {cat.name.slice(0, 2)}
           </span>
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-gray-600 group-hover:text-red-600">
-            {label}
+            {cat.name}
           </span>
         </a>
       ))}
@@ -82,14 +97,18 @@ function TopStoriesGrid({ topStories }) {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {topStories.map((story) => (
-          <a key={story.id} href={story.href || "#"} className="group flex flex-col gap-2">
-            <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
-              <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-            </div>
-            <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{story.category}</span>
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">{story.title}</h3>
-            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {story.author}</p>
-          </a>
+          <div key={story.id} className="group flex flex-col gap-2">
+            <a href={story.href || "#"} className="flex flex-col gap-2">
+              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+              </div>
+              <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{story.category}</span>
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">{story.title}</h3>
+            </a>
+            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+              <AuthorByline author={story.author} authorHref={story.authorHref} />
+            </p>
+          </div>
         ))}
       </div>
     </section>
@@ -108,7 +127,7 @@ function LatestNewsStrip({ latest }) {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {latest.map((story) => (
-          <a key={story.id} href="#" className="group flex gap-3">
+          <a key={story.id} href={story.href || "#"} className="group flex gap-3">
             <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-100">
               {story.image && <img src={story.image} alt={story.title} className="w-full h-full object-cover" />}
             </div>
@@ -131,14 +150,18 @@ function CategorySectionBlock({ title, articles }) {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {articles.map((article) => (
-          <a key={article.id} href={article.href || "#"} className="group flex flex-col gap-2">
-            <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
-              <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-            </div>
-            <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
-            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {article.author}</p>
-          </a>
+          <div key={article.id} className="group flex flex-col gap-2">
+            <a href={article.href || "#"} className="flex flex-col gap-2">
+              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+              </div>
+              <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+            </a>
+            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+              <AuthorByline author={article.author} authorHref={article.authorHref} />
+            </p>
+          </div>
         ))}
       </div>
     </section>
@@ -153,15 +176,17 @@ function TheFeedList({ feed }) {
       </div>
       <ul className="divide-y divide-dashed divide-gray-300">
         {feed.map((article) => (
-          <li key={article.id}>
-            <a href={article.href || "#"} className="group flex flex-row gap-4 py-4 items-start">
+          <li key={article.id} className="flex flex-row gap-4 py-4 items-start">
+            <a href={article.href || "#"} className="group flex flex-row gap-4 flex-1">
               <div className="flex-shrink-0 w-36 sm:w-44 lg:w-64 aspect-[4/3] overflow-hidden bg-gray-100">
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
               <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
                 <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg sm:text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
-                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {article.author}</p>
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+                  <AuthorByline author={article.author} authorHref={article.authorHref} />
+                </p>
               </div>
             </a>
           </li>
@@ -196,7 +221,7 @@ function TrendingSidebar({ latest }) {
         {latest.slice(0, 5).map((story, i) => (
           <li key={story.id} className="py-2.5 flex gap-2">
             <span className="text-red-600 font-black text-sm">{i + 1}</span>
-            <a href="#" className="group">
+            <a href={story.href || "#"} className="group">
               <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
             </a>
           </li>
@@ -207,13 +232,13 @@ function TrendingSidebar({ latest }) {
 }
 
 export default function HomepageTemplate2({ data }) {
-  const { hero, secondary, latest, topStories, categorySections, feed, newsletter } = data;
+  const { hero, secondary, latest, topStories, categorySections, feed, newsletter, categories } = data;
 
   return (
     <main className="min-h-[100vh] bg-gray-50">
       <HeroCarousel hero={hero} secondary={secondary} />
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <CategoryIconRow />
+        <CategoryIconRow categories={categories} />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8">

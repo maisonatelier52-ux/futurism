@@ -4,25 +4,31 @@
 // with Trending Now / Newsletter Signup / Category shortcuts, mid-feed
 // inserts (sponsored slot + featured editor pick), bottom category
 // expansion grid. Content-driven via the `data` prop.
+// Author names and category tags are real links (to /authors/[slug] and
+// /category/[slug]) whenever the data provides an href.
 "use client";
+
+import { AuthorByline } from "../shared/ArticleLinks";
 
 function StackedStoryCard({ article, large = false }) {
   return (
-    <a href={article.href || "#"} className="group flex flex-col gap-3 py-6 border-b border-gray-200">
-      <div className={`w-full ${large ? "aspect-[16/9]" : "aspect-[16/8]"} overflow-hidden bg-gray-100`}>
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-      </div>
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-      <h3 className={`font-[family-name:var(--font-owners-xnarrow)] ${large ? "text-3xl" : "text-2xl"} font-black uppercase leading-tight text-gray-900 group-hover:underline`}>
-        {article.title}
-      </h3>
-      {article.excerpt && (
-        <p className="font-[family-name:var(--font-bitter)] italic text-[#4a90a4] text-base">"{article.excerpt}"</p>
-      )}
+    <div className="group flex flex-col gap-3 py-6 border-b border-gray-200">
+      <a href={article.href || "#"} className="flex flex-col gap-3">
+        <div className={`w-full ${large ? "aspect-[16/9]" : "aspect-[16/8]"} overflow-hidden bg-gray-100`}>
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+        </div>
+        <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
+        <h3 className={`font-[family-name:var(--font-owners-xnarrow)] ${large ? "text-3xl" : "text-2xl"} font-black uppercase leading-tight text-gray-900 group-hover:underline`}>
+          {article.title}
+        </h3>
+        {article.excerpt && (
+          <p className="font-[family-name:var(--font-bitter)] italic text-[#4a90a4] text-base">"{article.excerpt}"</p>
+        )}
+      </a>
       <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-        By <span className="font-semibold text-gray-700 underline">{article.author}</span>
+        <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700" />
       </p>
-    </a>
+    </div>
   );
 }
 
@@ -38,16 +44,20 @@ function SponsoredSlot() {
 function EditorPickBlock({ article }) {
   if (!article) return null;
   return (
-    <a href={article.href || "#"} className="group flex flex-col md:flex-row gap-4 my-6 bg-white border border-gray-200 rounded-lg overflow-hidden">
-      <div className="md:w-2/5 aspect-[4/3] md:aspect-auto overflow-hidden bg-gray-100">
-        <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
-      </div>
-      <div className="p-5 flex flex-col justify-center">
-        <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">Editor's Pick</span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2">{article.title}</h3>
-        <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">By {article.author}</p>
-      </div>
-    </a>
+    <div className="group flex flex-col md:flex-row gap-4 my-6 bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <a href={article.href || "#"} className="flex flex-col md:flex-row gap-4 flex-1">
+        <div className="md:w-2/5 aspect-[4/3] md:aspect-auto overflow-hidden bg-gray-100">
+          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
+        </div>
+        <div className="p-5 flex flex-col justify-center">
+          <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">Editor's Pick</span>
+          <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2">{article.title}</h3>
+          <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">
+            <AuthorByline author={article.author} authorHref={article.authorHref} />
+          </p>
+        </div>
+      </a>
+    </div>
   );
 }
 
@@ -61,10 +71,14 @@ function TrendingSidebar({ latest }) {
         {latest.slice(0, 5).map((story, i) => (
           <li key={story.id} className="py-2.5 flex gap-2">
             <span className="text-red-600 font-black text-sm">{String(i + 1).padStart(2, "0")}</span>
-            <a href="#" className="group">
-              <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
-              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">By {story.author}</p>
-            </a>
+            <div>
+              <a href={story.href || "#"} className="group">
+                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
+              </a>
+              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">
+                <AuthorByline author={story.author} authorHref={story.authorHref} />
+              </p>
+            </div>
           </li>
         ))}
       </ul>
@@ -87,6 +101,8 @@ function NewsletterBox({ newsletter }) {
   );
 }
 
+// Jumps to that category section further down this same page (these are
+// curated homepage sections, not necessarily 1:1 with real category pages).
 function CategoryShortcuts({ categorySections }) {
   return (
     <div className="border border-gray-200 bg-white p-4">
@@ -96,7 +112,7 @@ function CategoryShortcuts({ categorySections }) {
       <ul className="flex flex-col gap-2">
         {categorySections.map((section) => (
           <li key={section.id}>
-            <a href="#" className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700 hover:text-red-600 transition-colors">
+            <a href={`#section-${section.id}`} className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700 hover:text-red-600 transition-colors">
               {section.title}
             </a>
           </li>
@@ -110,20 +126,24 @@ function CategoryExpansionGrid({ categorySections }) {
   return (
     <section className="w-full space-y-8">
       {categorySections.map((section) => (
-        <div key={section.id}>
+        <div key={section.id} id={`section-${section.id}`} className="scroll-mt-24">
           <div className="flex items-center gap-3 mb-4 border-b border-gray-300 pb-2">
             <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600">{section.title}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {section.articles.map((article) => (
-              <a key={article.id} href={article.href || "#"} className="group flex flex-col gap-2">
-                <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
-                  <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-                </div>
-                <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
-                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">By {article.author}</p>
-              </a>
+              <div key={article.id} className="group flex flex-col gap-2">
+                <a href={article.href || "#"} className="flex flex-col gap-2">
+                  <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                    <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                  </div>
+                  <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
+                  <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+                </a>
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+                  <AuthorByline author={article.author} authorHref={article.authorHref} />
+                </p>
+              </div>
             ))}
           </div>
         </div>

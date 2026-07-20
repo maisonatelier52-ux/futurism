@@ -3,9 +3,10 @@ import Footer from '../components/Footer';
 import HomepageResolver from '../components/HomepageResolver';
 import { API_BASE } from '../lib/apiConfig';
 import { DEFAULT_HOMEPAGE_CONFIG } from '../lib/homepageDefaults';
+import { resolveHomepageContent } from '../lib/resolveArticleQuery';
 
 // Always render fresh -- never statically cache this page -- so a Homepage
-// Builder save shows up on the very next request.
+// Builder save (or a newly published article) shows up on the very next request.
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -26,11 +27,14 @@ async function getHomepageConfig() {
 
 export default async function Home() {
   const config = await getHomepageConfig();
+  // Expands each section's query config (heroQuery, latestQuery, etc.) into
+  // real, newest-first articles from Admin -> Articles.
+  const resolvedContent = await resolveHomepageContent(config.content, API_BASE);
 
   return (
     <>
       <Header />
-      <HomepageResolver config={config} />
+      <HomepageResolver config={{ activeTemplate: config.activeTemplate, content: resolvedContent }} />
       <Footer />
     </>
   );

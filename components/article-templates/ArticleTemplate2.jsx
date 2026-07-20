@@ -5,19 +5,8 @@
 "use client";
 
 import ArticleBody from "./ArticleBody";
-
-function ShareIconsVertical() {
-  const icons = ["f", "𝕏", "in", "reddit", "✉"];
-  return (
-    <div className="flex flex-col items-center gap-3">
-      {icons.map((ic, i) => (
-        <a key={i} href="#" className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-[10px] text-gray-600 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-colors">
-          {ic}
-        </a>
-      ))}
-    </div>
-  );
-}
+import { AuthorByline, CategoryTag, ShareIcons } from "../shared/ArticleLinks";
+import { SITE_URL } from "@/lib/apiConfig";
 
 export default function ArticleTemplate2({ article, related }) {
   const { mostPopular, aroundTheWeb, moreInCategory } = related;
@@ -30,7 +19,7 @@ export default function ArticleTemplate2({ article, related }) {
         <p className="font-[family-name:var(--font-scale)] text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-3">
           <a href="/" className="hover:text-gray-700">Home</a>
           <span className="mx-1.5">›</span>
-          <span className="text-red-600">{article.category}</span>
+          <CategoryTag category={article.category} categoryHref={article.categoryHref} className="text-red-600" />
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -63,7 +52,7 @@ export default function ArticleTemplate2({ article, related }) {
                 <p className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-gray-900 mb-3 text-center lg:text-left">
                   Share
                 </p>
-                <ShareIconsVertical />
+                <ShareIcons title={article.title} url={`${SITE_URL}${article.href}`} variant="light" />
               </div>
               {readNext.length > 0 && (
                 <div>
@@ -131,8 +120,10 @@ export default function ArticleTemplate2({ article, related }) {
                       <a href={item.href || "#"} className="group block">
                         <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600 block mb-1">{item.category}</span>
                         <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">{item.title}</h3>
-                        <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">By {item.author}</p>
                       </a>
+                      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">
+                        <AuthorByline author={item.author} authorHref={item.authorHref} />
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -155,7 +146,6 @@ export default function ArticleTemplate2({ article, related }) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 border-t border-gray-200">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900">Around the Web</h2>
-          <a href="#" className="font-[family-name:var(--font-scale)] text-[11px] font-semibold text-gray-400 hover:text-red-600">View All →</a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-8">
           {aroundTheWeb.map((item) => (
@@ -175,18 +165,24 @@ export default function ArticleTemplate2({ article, related }) {
           <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900">
             More in {(article.category || "").charAt(0) + (article.category || "").slice(1).toLowerCase()}
           </h2>
-          <a href="#" className="font-[family-name:var(--font-scale)] text-[11px] font-semibold text-gray-400 hover:text-red-600">View All →</a>
+          {article.categoryHref && (
+            <a href={article.categoryHref} className="font-[family-name:var(--font-scale)] text-[11px] font-semibold text-gray-400 hover:text-red-600">View All →</a>
+          )}
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-8">
           {moreInCategory.map((item) => (
-            <a key={item.id} href={item.href || "#"} className="group flex flex-col gap-2">
-              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-              </div>
-              <span className="font-[family-name:var(--font-scale)] text-[9px] font-semibold uppercase tracking-widest text-red-600">{item.category}</span>
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">{item.title}</h3>
-              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">By {item.author}</p>
-            </a>
+            <div key={item.id} className="group flex flex-col gap-2">
+              <a href={item.href || "#"} className="flex flex-col gap-2">
+                <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                </div>
+                <span className="font-[family-name:var(--font-scale)] text-[9px] font-semibold uppercase tracking-widest text-red-600">{item.category}</span>
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">{item.title}</h3>
+              </a>
+              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">
+                <AuthorByline author={item.author} authorHref={item.authorHref} />
+              </p>
+            </div>
           ))}
         </div>
       </div>

@@ -87,9 +87,6 @@ export default function HeaderTemplate7({ config }) {
             </a>
           ))}
         </div>
-        <a href="#" className="px-2 xs:px-3 md:px-4 py-2.5 flex-shrink-0 border-l border-gray-200 hover:underline whitespace-nowrap text-[11px] md:text-xs flex items-center" style={{ color: c.textColor }}>
-          View All →
-        </a>
       </div>
 
       {/* ── Mobile menu ─────────────────────────────────── */}

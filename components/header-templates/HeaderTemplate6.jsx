@@ -55,9 +55,6 @@ export default function HeaderTemplate6({ config }) {
               {topic.label}
             </a>
           ))}
-          <a href="#" className="ml-auto flex-shrink-0 text-[11px] xs:text-xs font-semibold whitespace-nowrap hover:underline" style={{ color: c.accentColor }}>
-            View All Trends →
-          </a>
         </div>
       </div>
 
