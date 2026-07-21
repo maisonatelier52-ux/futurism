@@ -31,7 +31,7 @@ function HeroCarousel({ hero, secondary }) {
           {active.category}
         </span>
         <a href={active.href || "#"}>
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl md:text-4xl font-black uppercase leading-tight text-white mt-2 hover:underline">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl md:text-4xl font-black uppercase leading-tight text-white mt-2 hover:underline break-words">
             {active.title}
           </h2>
         </a>
@@ -103,7 +103,7 @@ function TopStoriesGrid({ topStories }) {
                 <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
               <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{story.category}</span>
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">{story.title}</h3>
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{story.title}</h3>
             </a>
             <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
               <AuthorByline author={story.author} authorHref={story.authorHref} />
@@ -133,7 +133,7 @@ function LatestNewsStrip({ latest }) {
             </div>
             <div className="min-w-0">
               <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600">{story.category}</span>
-              <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
+              <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline break-words">{story.title}</h4>
             </div>
           </a>
         ))}
@@ -146,7 +146,7 @@ function CategorySectionBlock({ title, articles }) {
   return (
     <section className="w-full py-6">
       <div className="flex items-center gap-3 mb-4 border-b border-gray-300 pb-2">
-        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600">{title}</h2>
+        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">{title}</h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {articles.map((article) => (
@@ -156,7 +156,7 @@ function CategorySectionBlock({ title, articles }) {
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
               <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
             </a>
             <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
               <AuthorByline author={article.author} authorHref={article.authorHref} />
@@ -172,7 +172,7 @@ function TheFeedList({ feed }) {
   return (
     <section className="w-full">
       <div className="border-b border-gray-300 pb-2 mb-2">
-        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600">The Feed</h2>
+        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">The Feed</h2>
       </div>
       <ul className="divide-y divide-dashed divide-gray-300">
         {feed.map((article) => (
@@ -183,7 +183,7 @@ function TheFeedList({ feed }) {
               </div>
               <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg sm:text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg sm:text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
                   <AuthorByline author={article.author} authorHref={article.authorHref} />
                 </p>
@@ -199,7 +199,7 @@ function TheFeedList({ feed }) {
 function NewsletterSidebarBox({ newsletter }) {
   return (
     <div className="bg-[#1f2326] text-white p-5">
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2">{newsletter.title}</h3>
+      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2 break-words">{newsletter.title}</h3>
       <p className="font-[family-name:var(--font-owners-text)] text-gray-300 text-xs leading-relaxed mb-4">{newsletter.description}</p>
       <div className="space-y-3">
         <input type="email" placeholder="Enter your email" className="w-full h-9 px-3 bg-white text-black text-xs border border-gray-300 focus:outline-none rounded-none" />
@@ -222,7 +222,7 @@ function TrendingSidebar({ latest }) {
           <li key={story.id} className="py-2.5 flex gap-2">
             <span className="text-red-600 font-black text-sm">{i + 1}</span>
             <a href={story.href || "#"} className="group">
-              <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
+              <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline break-words">{story.title}</h4>
             </a>
           </li>
         ))}

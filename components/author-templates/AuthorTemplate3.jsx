@@ -20,7 +20,7 @@ export default function AuthorTemplate3({ author, articles, pagination }) {
             <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl sm:text-3xl font-black uppercase text-gray-900 leading-none">
+            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl sm:text-3xl font-black uppercase text-gray-900 leading-none break-words">
               {author.name}
             </h1>
             {author.role && (
@@ -85,7 +85,7 @@ export default function AuthorTemplate3({ author, articles, pagination }) {
       {/* More From grid */}
       <div id="more-from-author" className="max-w-7xl mx-auto px-6 md:px-12 pb-8 sm:pb-10 scroll-mt-24">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600 break-words">
             More From {author.name}
           </h2>
         </div>

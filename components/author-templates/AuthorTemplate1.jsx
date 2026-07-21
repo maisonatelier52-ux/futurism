@@ -42,7 +42,7 @@ export default function AuthorTemplate1({ author, articles, pagination }) {
           </div>
 
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl sm:text-5xl font-black uppercase leading-[0.9] text-gray-900 mb-3">
+            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl sm:text-5xl font-black uppercase leading-[0.9] text-gray-900 mb-3 break-words">
               {author.name}
             </h1>
             <div className="h-1 w-14 bg-red-600 mb-4 mx-auto sm:mx-0" />
@@ -116,7 +116,7 @@ export default function AuthorTemplate1({ author, articles, pagination }) {
         <div className="bg-gray-950 py-8 sm:py-10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-              <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase tracking-wide text-white">Notable Works</h2>
+              <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase tracking-wide text-white break-words">Notable Works</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
               {author.notableWorks.slice(0, 3).map((work, i) => (

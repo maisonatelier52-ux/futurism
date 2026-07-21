@@ -32,7 +32,7 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
                   {author.role}
                 </p>
               )}
-              <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-[0.95] mb-4">
+              <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-[0.95] mb-4 break-words">
                 {author.name}
               </h1>
               {author.bio && (
@@ -102,7 +102,7 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
         <div className="bg-gray-950 py-8 sm:py-10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-              <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-base sm:text-lg font-black uppercase text-white">
+              <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-base sm:text-lg font-black uppercase text-white break-words">
                 Latest From <span className="text-red-500">{author.name?.split(" ")[0] || ""}</span>
               </h2>
             </div>
@@ -128,7 +128,7 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
       {/* More From grid */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 sm:py-10">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600 break-words">
             More From {author.name}
           </h2>
         </div>

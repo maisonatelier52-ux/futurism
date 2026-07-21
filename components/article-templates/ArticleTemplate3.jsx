@@ -29,7 +29,7 @@ export default function ArticleTemplate3({ article, related }) {
                 {article.tag}
               </p>
             )}
-            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl md:text-5xl font-black uppercase leading-[0.95] text-white max-w-3xl mb-3">
+            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl md:text-5xl font-black uppercase leading-[0.95] text-white max-w-3xl mb-3 break-words">
               {article.title}
             </h1>
             {article.excerpt && (
@@ -101,7 +101,7 @@ export default function ArticleTemplate3({ article, related }) {
                 </div>
               </a>
               <div>
-                <a href={article.author.href || "#"} className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 hover:underline block">
+                <a href={article.author.href || "#"} className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 hover:underline block break-words">
                   {article.author.name}
                 </a>
                 {article.author.role && (
@@ -133,7 +133,7 @@ export default function ArticleTemplate3({ article, related }) {
                     <li key={item.id} className="py-3">
                       <a href={item.href || "#"} className="group block">
                         <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600 block mb-1">{item.category}</span>
-                        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">{item.title}</h3>
+                        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1 break-words">{item.title}</h3>
                       </a>
                       <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500">
                         <AuthorByline author={item.author} authorHref={item.authorHref} />
@@ -144,8 +144,8 @@ export default function ArticleTemplate3({ article, related }) {
               </div>
 
               <div className="bg-red-600 text-white p-5">
-                <p className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide mb-1">Futurism</p>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-[0.9] mb-3">The Future Is</h3>
+                <p className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide mb-1 break-words">Futurism</p>
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-[0.9] mb-3 break-words">The Future Is</h3>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs mb-4">Sign up for our daily newsletter</p>
                 <button className="w-full bg-white text-red-600 font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-4 py-3 rounded">
                   Sign Up
@@ -159,7 +159,7 @@ export default function ArticleTemplate3({ article, related }) {
       {/* Around the Web + More in Category combined grid, with Load More */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 border-t border-gray-200">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900">Around the Web</h2>
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 break-words">Around the Web</h2>
           <span className="font-[family-name:var(--font-scale)] text-[10px] text-gray-400 uppercase tracking-widest">Powered by Revcontent</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-8 mb-8">

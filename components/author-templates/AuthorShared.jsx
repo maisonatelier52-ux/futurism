@@ -23,7 +23,7 @@ export function AuthorArticleCard({ article }) {
         categoryHref={article.categoryHref}
         className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1"
       />
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm sm:text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">
+      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm sm:text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">
         {article.title}
       </h3>
     </a>

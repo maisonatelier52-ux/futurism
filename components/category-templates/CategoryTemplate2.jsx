@@ -18,7 +18,7 @@ function RailItem({ article }) {
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
             {article.category}
           </span>
-          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline uppercase">
+          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline uppercase break-words">
             {article.title}
           </h4>
         </div>
@@ -40,7 +40,7 @@ function GridCard({ article }) {
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
           {article.category}
         </span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">
           {article.title}
         </h3>
       </a>
@@ -76,7 +76,7 @@ export default function CategoryTemplate2({ data }) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6">
         <p className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-red-600 mb-1">Category</p>
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900">
+          <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 break-words">
             {hero.title}
           </h1>
           <div className="flex items-center gap-6 md:pt-3">
@@ -102,7 +102,7 @@ export default function CategoryTemplate2({ data }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left rail */}
           <div className="lg:col-span-3">
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600 border-b border-red-200 pb-2 mb-1">
+            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600 border-b border-red-200 pb-2 mb-1 break-words">
               Latest in {hero.title}
             </h3>
             {latest.map((a) => <RailItem key={a.id} article={a} />)}
@@ -118,7 +118,7 @@ export default function CategoryTemplate2({ data }) {
               <div className="flex flex-col justify-center">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">{featured.category}</span>
                 <a href={featured.href || "#"}>
-                  <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2">
+                  <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2 break-words">
                     {featured.title}
                   </h2>
                 </a>

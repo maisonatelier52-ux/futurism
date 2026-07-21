@@ -51,7 +51,8 @@ export default async function CategoryPage({ params, searchParams }) {
     getCategory(slug),
   ]);
 
-  const resolvedContent = await resolveCategoryPageContent(config.content, category, API_BASE, page);
+  const safeContent = config.content || DEFAULT_CATEGORY_PAGE_CONFIG.content;
+  const resolvedContent = await resolveCategoryPageContent(safeContent, category, API_BASE, page);
 
   return (
     <>

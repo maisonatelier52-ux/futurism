@@ -21,7 +21,7 @@ function ArticleCard({ article }) {
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">
           {article.category}
         </span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">
           {article.title}
         </h3>
       </a>
@@ -58,7 +58,7 @@ export default function CategoryTemplate4({ data }) {
     <main className="min-h-screen bg-white">
       {/* Category Hero */}
       <div className="max-w-2xl mx-auto px-6 py-10 text-center">
-        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-5xl md:text-6xl font-black uppercase leading-none text-gray-900 mb-5">
+        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-5xl md:text-6xl font-black uppercase leading-none text-gray-900 mb-5 break-words">
           {hero.title}
         </h1>
         <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-600 leading-relaxed">
@@ -87,7 +87,7 @@ export default function CategoryTemplate4({ data }) {
       {/* Latest Section Header */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-6">
         <div className="border-b border-gray-300 pb-3">
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600 break-words">
             Latest in {hero.title}
           </h2>
         </div>

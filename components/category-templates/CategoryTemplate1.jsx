@@ -18,7 +18,7 @@ function RailItem({ article }) {
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
             {article.category}
           </span>
-          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[13px] font-bold leading-snug text-gray-900 group-hover:underline">
+          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[13px] font-bold leading-snug text-gray-900 group-hover:underline break-words">
             {article.title}
           </h4>
         </div>
@@ -43,7 +43,7 @@ function TrendingCard({ article, index }) {
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
           {article.category}
         </span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline">
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline break-words">
           {article.title}
         </h3>
       </a>
@@ -61,7 +61,7 @@ export default function CategoryTemplate1({ data }) {
     <main className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6">
         <p className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-indigo-600 mb-1">Category</p>
-        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900">
+        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 break-words">
           {hero.title}
         </h1>
         <div className="h-1 w-16 bg-indigo-600 mt-4" />
@@ -94,7 +94,7 @@ export default function CategoryTemplate1({ data }) {
                 <span className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-indigo-300 mb-3">
                   {featured.category}
                 </span>
-                <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-tight group-hover:underline">
+                <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-tight group-hover:underline break-words">
                   {featured.title}
                 </h2>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs text-indigo-200 mt-4">
@@ -113,7 +113,7 @@ export default function CategoryTemplate1({ data }) {
 
           {/* Right rail */}
           <div className="lg:col-span-4 border border-gray-200 rounded-lg p-5">
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-indigo-600 border-b border-indigo-200 pb-2 mb-1">
+            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-indigo-600 border-b border-indigo-200 pb-2 mb-1 break-words">
               Latest in {hero.title}
             </h3>
             {latest.map((a) => <RailItem key={a.id} article={a} />)}
@@ -123,7 +123,7 @@ export default function CategoryTemplate1({ data }) {
 
       {/* Trending strip */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8">
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-gray-900 mb-4">Trending Now</h3>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-gray-900 mb-4 break-words">Trending Now</h3>
         <div className="flex gap-6 overflow-x-auto pb-2">
           {latest.map((a, i) => <TrendingCard key={a.id} article={a} index={i} />)}
         </div>
@@ -145,7 +145,7 @@ export default function CategoryTemplate1({ data }) {
                   </div>
                   <div className="p-4 pb-0">
                     <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-indigo-600">{item.category}</span>
-                    <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline mt-1">{item.title}</h4>
+                    <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline mt-1 break-words">{item.title}</h4>
                   </div>
                 </a>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 px-4 pb-4">
@@ -162,7 +162,7 @@ export default function CategoryTemplate1({ data }) {
         <div className="bg-gray-50 rounded-lg flex flex-col md:flex-row items-center gap-6 px-8 py-8">
           <div className="w-14 h-14 shrink-0 rounded-full bg-indigo-900 flex items-center justify-center text-white">✉</div>
           <div className="flex-1">
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black text-gray-900">{newsletter.title}</h3>
+            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black text-gray-900 break-words">{newsletter.title}</h3>
             <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500 mt-1">{newsletter.description}</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">

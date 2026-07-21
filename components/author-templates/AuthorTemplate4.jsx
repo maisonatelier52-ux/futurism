@@ -17,7 +17,7 @@ export default function AuthorTemplate4({ author, articles, pagination }) {
             <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col gap-2 pt-1 items-center sm:items-start text-center sm:text-left w-full">
-            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-none text-gray-900">
+            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 break-words">
               {author.name}
             </h1>
             <p className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-500">
@@ -40,7 +40,7 @@ export default function AuthorTemplate4({ author, articles, pagination }) {
         {/* About */}
         {author.about?.length > 0 && (
           <div className="mb-8">
-            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-4">About</h2>
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-4 break-words">About</h2>
             <div className="flex flex-col gap-4">
               {author.about.map((para, i) => (
                 <p key={i} className="font-[family-name:var(--font-owners-text)] text-sm text-gray-700 leading-relaxed">{para}</p>
@@ -52,7 +52,7 @@ export default function AuthorTemplate4({ author, articles, pagination }) {
         {/* Education */}
         {author.education && (
           <div className="mb-8">
-            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-3">Education</h2>
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-3 break-words">Education</h2>
             <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-700">{author.education}</p>
           </div>
         )}
@@ -60,7 +60,7 @@ export default function AuthorTemplate4({ author, articles, pagination }) {
         {/* Notable Works */}
         {author.notableWorks?.length > 0 && (
           <div className="mb-10 sm:mb-12">
-            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-4">Notable Works</h2>
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-4 break-words">Notable Works</h2>
             <ul className="flex flex-col gap-4">
               {author.notableWorks.map((work, i) => (
                 <li key={i} className="flex flex-col gap-0.5 pl-4 border-l-2 border-gray-200">
@@ -76,7 +76,7 @@ export default function AuthorTemplate4({ author, articles, pagination }) {
       {/* More From Author */}
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="border-b border-gray-300 pb-3 mb-6 sm:mb-8">
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-red-600 break-words">
             More From {author.name}
           </h2>
         </div>

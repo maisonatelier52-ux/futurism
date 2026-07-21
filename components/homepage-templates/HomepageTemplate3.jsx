@@ -69,7 +69,7 @@ function LatestNewsStrip({ latest }) {
               {story.image && <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />}
             </div>
             <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600">{story.category}</span>
-            <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline">{story.title}</h4>
+            <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline break-words">{story.title}</h4>
           </a>
         ))}
       </div>
@@ -89,7 +89,7 @@ function TrendingSidebar({ latest }) {
             <span className="text-red-600 font-black text-sm">{String(i + 1).padStart(2, "0")}</span>
             <div>
               <a href={story.href || "#"} className="group">
-                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
+                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline break-words">{story.title}</h4>
               </a>
               <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">
                 <AuthorByline author={story.author} authorHref={story.authorHref} />
@@ -106,7 +106,7 @@ function CategoryRibbon({ title, articles }) {
   return (
     <section className="w-full py-6">
       <div className="flex items-center gap-3 mb-4 border-b border-gray-300 pb-2">
-        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600">{title}</h2>
+        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">{title}</h2>
       </div>
       <div className="flex gap-6 overflow-x-auto pb-2">
         {articles.map((article) => (
@@ -115,7 +115,7 @@ function CategoryRibbon({ title, articles }) {
               <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
             </div>
             <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
           </a>
         ))}
       </div>
@@ -127,7 +127,7 @@ function MixedFeed({ feed }) {
   return (
     <section className="w-full">
       <div className="border-b border-gray-300 pb-2 mb-2">
-        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600">The Feed</h2>
+        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">The Feed</h2>
       </div>
       <ul className="divide-y divide-dashed divide-gray-300">
         {feed.map((article, i) => (
@@ -141,7 +141,7 @@ function MixedFeed({ feed }) {
               </div>
               <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg sm:text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg sm:text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
                   <AuthorByline author={article.author} authorHref={article.authorHref} />
                 </p>

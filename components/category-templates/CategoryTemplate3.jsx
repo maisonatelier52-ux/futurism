@@ -18,7 +18,7 @@ function RailItem({ article }) {
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
             {article.category}
           </span>
-          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline uppercase">
+          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12px] font-bold leading-snug text-gray-900 group-hover:underline uppercase break-words">
             {article.title}
           </h4>
         </div>
@@ -40,7 +40,7 @@ function GridCard({ article }) {
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
           {article.category}
         </span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">
           {article.title}
         </h3>
       </a>
@@ -74,7 +74,7 @@ export default function CategoryTemplate3({ data }) {
   return (
     <main className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6">
-        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900">
+        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 break-words">
           {hero.title}
         </h1>
         <div className="h-0.5 w-12 bg-red-600 mt-4" />
@@ -116,7 +116,7 @@ export default function CategoryTemplate3({ data }) {
                 <span className="block font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600 mt-3">
                   {featured.category}
                 </span>
-                <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-1">
+                <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-1 break-words">
                   {featured.title}
                 </h2>
               </a>

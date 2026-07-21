@@ -51,7 +51,7 @@ function EditorPickBlock({ article }) {
         </div>
         <div className="p-5 flex flex-col justify-center">
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">Editor's Pick</span>
-          <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2">{article.title}</h3>
+          <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2 break-words">{article.title}</h3>
           <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">
             <AuthorByline author={article.author} authorHref={article.authorHref} />
           </p>
@@ -73,7 +73,7 @@ function TrendingSidebar({ latest }) {
             <span className="text-red-600 font-black text-sm">{String(i + 1).padStart(2, "0")}</span>
             <div>
               <a href={story.href || "#"} className="group">
-                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline">{story.title}</h4>
+                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline break-words">{story.title}</h4>
               </a>
               <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">
                 <AuthorByline author={story.author} authorHref={story.authorHref} />
@@ -89,7 +89,7 @@ function TrendingSidebar({ latest }) {
 function NewsletterBox({ newsletter }) {
   return (
     <div className="bg-[#1f2326] text-white p-5">
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2">{newsletter.title}</h3>
+      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2 break-words">{newsletter.title}</h3>
       <p className="font-[family-name:var(--font-owners-text)] text-gray-300 text-xs leading-relaxed mb-4">{newsletter.description}</p>
       <div className="space-y-3">
         <input type="email" placeholder="Enter your email" className="w-full h-9 px-3 bg-white text-black text-xs border border-gray-300 focus:outline-none rounded-none" />
@@ -128,7 +128,7 @@ function CategoryExpansionGrid({ categorySections }) {
       {categorySections.map((section) => (
         <div key={section.id} id={`section-${section.id}`} className="scroll-mt-24">
           <div className="flex items-center gap-3 mb-4 border-b border-gray-300 pb-2">
-            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600">{section.title}</h2>
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">{section.title}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {section.articles.map((article) => (
@@ -138,7 +138,7 @@ function CategoryExpansionGrid({ categorySections }) {
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
                   </div>
                   <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-                  <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+                  <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
                 </a>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
                   <AuthorByline author={article.author} authorHref={article.authorHref} />

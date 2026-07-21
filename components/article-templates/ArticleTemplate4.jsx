@@ -16,7 +16,7 @@ function ArticleCard({ article }) {
           <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
         </div>
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline">{article.title}</h3>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
       </a>
       <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
         <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700" />
@@ -51,7 +51,7 @@ export default function ArticleTemplate4({ article, related }) {
                 {article.tag}
               </p>
             )}
-            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 mb-4">
+            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 mb-4 break-words">
               {article.title}
             </h1>
             <p className="font-[family-name:var(--font-bitter)] italic text-xl text-gray-600 mb-4">
@@ -101,7 +101,7 @@ export default function ArticleTemplate4({ article, related }) {
                 </div>
               </a>
               <div>
-                <a href={article.author.href || "#"} className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 hover:underline block">
+                <a href={article.author.href || "#"} className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 hover:underline block break-words">
                   {article.author.name}
                 </a>
                 {article.author.role && (
@@ -134,7 +134,7 @@ export default function ArticleTemplate4({ article, related }) {
                       <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600 block mb-1">
                         {item.category}
                       </span>
-                      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">
+                      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1 break-words">
                         {item.title}
                       </h3>
                     </a>
@@ -160,7 +160,7 @@ export default function ArticleTemplate4({ article, related }) {
       {/* Around the Web */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 border-t border-gray-200">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase text-gray-900">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase text-gray-900 break-words">
             Around the Web
           </h2>
           <span className="font-[family-name:var(--font-scale)] text-[10px] text-gray-400 uppercase tracking-widest">
@@ -173,7 +173,7 @@ export default function ArticleTemplate4({ article, related }) {
               <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
                 <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline">
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">
                 {item.title}
               </h3>
             </a>
@@ -185,11 +185,11 @@ export default function ArticleTemplate4({ article, related }) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10">
         <div className="mb-6">
           {article.categoryHref ? (
-            <a href={article.categoryHref} className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2 hover:bg-gray-700 transition-colors">
+            <a href={article.categoryHref} className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2 hover:bg-gray-700 transition-colors break-words">
               More in {(article.category || "").charAt(0) + (article.category || "").slice(1).toLowerCase()}
             </a>
           ) : (
-            <span className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2">
+            <span className="inline-block bg-gray-900 text-white font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide px-5 py-2 break-words">
               More in {(article.category || "").charAt(0) + (article.category || "").slice(1).toLowerCase()}
             </span>
           )}

@@ -24,7 +24,7 @@ export default function ArticleBody({ blocks, quoteColor = "text-red-600" }) {
             <h2
               key={i}
               id={slugifyHeading(block.text)}
-              className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase text-gray-900 mt-2 scroll-mt-24"
+              className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase text-gray-900 mt-2 scroll-mt-24 break-words"
             >
               {block.text}
             </h2>
@@ -64,7 +64,7 @@ export default function ArticleBody({ blocks, quoteColor = "text-red-600" }) {
         if (block.type === "at_a_glance") {
           return (
             <div key={i} className="border border-gray-200 bg-gray-50 rounded-lg p-5 my-2">
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900">
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 break-words">
                 {block.glanceTitle || "At a glance"}
               </h3>
               {block.glanceSubtitle && (
@@ -85,7 +85,7 @@ export default function ArticleBody({ blocks, quoteColor = "text-red-600" }) {
         if (block.type === "faq") {
           return (
             <div key={i} className="my-2">
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 mb-3">
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 mb-3 break-words">
                 {block.faqTitle || "Frequently asked questions"}
               </h3>
               <div className="divide-y divide-gray-200 border-t border-b border-gray-200">

@@ -25,7 +25,7 @@ export default function ArticleTemplate1({ article, related }) {
                 {article.tag}
               </p>
             )}
-            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl md:text-4xl font-black uppercase leading-[0.95] text-white mb-4">
+            <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl md:text-4xl font-black uppercase leading-[0.95] text-white mb-4 break-words">
               {article.title}
             </h1>
             {article.excerpt && (
@@ -87,7 +87,7 @@ export default function ArticleTemplate1({ article, related }) {
                 </div>
               </a>
               <div>
-                <a href={article.author.href || "#"} className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 hover:underline block">
+                <a href={article.author.href || "#"} className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase text-gray-900 hover:underline block break-words">
                   {article.author.name}
                 </a>
                 {article.author.role && (
@@ -121,7 +121,7 @@ export default function ArticleTemplate1({ article, related }) {
                         <span className="font-[family-name:var(--font-scale)] text-[9px] font-bold uppercase tracking-widest text-red-600 block mb-1">
                           {item.category}
                         </span>
-                        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1">
+                        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1 break-words">
                           {item.title}
                         </h3>
                       </a>
@@ -134,8 +134,8 @@ export default function ArticleTemplate1({ article, related }) {
               </div>
 
               <div className="bg-red-600 text-white p-5">
-                <p className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide mb-1">Futurism</p>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl font-black uppercase leading-[0.9] mb-3">The Future Is</h3>
+                <p className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide mb-1 break-words">Futurism</p>
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl font-black uppercase leading-[0.9] mb-3 break-words">The Future Is</h3>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs mb-4">Sign up for our daily newsletter</p>
                 <button className="w-full flex items-center justify-between bg-white text-red-600 font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-4 py-3 rounded">
                   Sign Up For Our Daily Newsletter
@@ -149,7 +149,7 @@ export default function ArticleTemplate1({ article, related }) {
 
       {/* Around the Web */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10 border-t border-gray-200 pt-8">
-        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-6">Around the Web</h2>
+        <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 mb-6 break-words">Around the Web</h2>
         <div className="grid grid-cols-2 md:grid-cols-6 gap-x-6 gap-y-8">
           {aroundTheWeb.map((item) => (
             <a key={item.id} href={item.href || "#"} className="group flex flex-col gap-2">
