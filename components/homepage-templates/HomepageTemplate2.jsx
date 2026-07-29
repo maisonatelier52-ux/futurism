@@ -10,6 +10,8 @@
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { AuthorByline, CategoryTag } from "../shared/ArticleLinks";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function HeroCarousel({ hero, secondary }) {
   const slides = [hero, ...secondary].filter(Boolean);
@@ -197,16 +199,20 @@ function TheFeedList({ feed }) {
 }
 
 function NewsletterSidebarBox({ newsletter }) {
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("homepage-sidebar");
   return (
     <div className="bg-[#1f2326] text-white p-5">
       <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2 break-words">{newsletter.title}</h3>
       <p className="font-[family-name:var(--font-owners-text)] text-gray-300 text-xs leading-relaxed mb-4">{newsletter.description}</p>
-      <div className="space-y-3">
-        <input type="email" placeholder="Enter your email" className="w-full h-9 px-3 bg-white text-black text-xs border border-gray-300 focus:outline-none rounded-none" />
-        <button className="w-full h-9 bg-white text-black font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs border border-white hover:bg-gray-200 transition rounded-none">
-          {newsletter.buttonLabel}
+      <form onSubmit={submit} className="space-y-3">
+        <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
+          className="w-full h-9 px-3 bg-white text-black text-xs border border-gray-300 focus:outline-none rounded-none" />
+        <button type="submit" disabled={status === "loading"}
+          className="w-full h-9 bg-white text-black font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs border border-white hover:bg-gray-200 transition rounded-none disabled:opacity-60">
+          {status === "loading" ? "Signing up…" : newsletter.buttonLabel}
         </button>
-      </div>
+      </form>
+      <NewsletterStatus status={status} message={message} light />
     </div>
   );
 }

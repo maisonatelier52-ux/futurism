@@ -28,6 +28,17 @@ function isValidSlug(slug) {
   return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug);
 }
 
+// datetime-local inputs need "YYYY-MM-DDTHH:mm" in LOCAL time (no timezone
+// suffix) -- toISOString() gives UTC with a "Z", so this converts using the
+// browser's local offset instead of naively slicing the ISO string.
+function toDatetimeLocalValue(isoOrDate) {
+  if (!isoOrDate) return "";
+  const d = new Date(isoOrDate);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 function resolveImg(src) {
   return src || "";
 }
@@ -360,6 +371,7 @@ const EMPTY_FORM = {
   date: new Date().toISOString().split("T")[0],
   readTime: "", isPublished: true, imageAlt: "", keywords: "", tags: "",
   layoutVariation: "variation-4",
+  scheduledAt: "", // datetime-local string, e.g. "2026-08-01T09:00"; empty = not scheduled
 };
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
@@ -580,6 +592,8 @@ export default function ArticlesPage() {
     if (!formData.keywords.trim())                          e.keywords        = "Keywords are required.";
     if (!formData.tags.trim())                              e.tags            = "Tags are required.";
     if (!editingArticle && !mainImgBase64)                  e.mainImage       = "Featured image is required.";
+    if (formData.scheduledAt && new Date(formData.scheduledAt).getTime() <= Date.now())
+      e.scheduledAt = "Scheduled time must be in the future.";
     if (contentBlocks.length === 0)                         e.content         = "Add at least one content block.";
     else if (!hasValidParagraph)                            e.content         = "At least one paragraph block with text is required.";
     if (hasErrors && !e.content)                            e.content         = "Fix errors in content blocks above.";
@@ -607,6 +621,7 @@ export default function ArticlesPage() {
         content: cleanContent,
         keywords: formData.keywords.split(",").map((k) => k.trim()).filter(Boolean),
         tags: formData.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        scheduledAt: formData.scheduledAt ? new Date(formData.scheduledAt).toISOString() : null,
         ...(formData.layoutVariation === "variation-1" ? { sagaSoFar } : { sagaSoFar: [] }),
         ...(editingArticle ? { _id: editingArticle._id } : {}),
       };
@@ -637,6 +652,7 @@ export default function ArticlesPage() {
         date:             article.date || new Date().toISOString().split("T")[0],
         readTime:         article.readTime || "",
         isPublished:      article.isPublished ?? true,
+        scheduledAt:      toDatetimeLocalValue(article.scheduledAt),
         imageAlt:         article.imageAlt || "",
         keywords:         (article.keywords || []).join(", "),
         tags:             (article.tags || []).join(", "),
@@ -934,11 +950,28 @@ export default function ArticlesPage() {
                     </FormField>
                     <FormField label="Status">
                       <select value={String(formData.isPublished)}
-                        onChange={(e) => set({ isPublished: e.target.value === "true" })}
+                        onChange={(e) => set({ isPublished: e.target.value === "true", ...(e.target.value === "true" ? { scheduledAt: "" } : {}) })}
                         className={inpCls("isPublished") + " cursor-pointer"}>
                         <option value="true">Published</option>
                         <option value="false">Draft</option>
                       </select>
+                    </FormField>
+                    <FormField
+                      label="Schedule for later (optional)"
+                      error={formErrors.scheduledAt}
+                      hint={formData.scheduledAt ? "Overrides Status above — this article stays a draft until the scheduled time, then publishes automatically." : "Leave blank to use the Status field above."}
+                    >
+                      <div className="flex gap-2">
+                        <input type="datetime-local" value={formData.scheduledAt}
+                          onChange={(e) => set({ scheduledAt: e.target.value })}
+                          className={inpCls("scheduledAt") + " cursor-pointer"} />
+                        {formData.scheduledAt && (
+                          <button type="button" onClick={() => set({ scheduledAt: "" })}
+                            className="shrink-0 px-3 rounded-lg border border-border text-ink-500 hover:bg-surface-soft text-[12px] cursor-pointer">
+                            Clear
+                          </button>
+                        )}
+                      </div>
                     </FormField>
                   </div>
                 </div>
@@ -1115,9 +1148,17 @@ function ArticleRow({ article, getCategoryName, onEdit, onDelete }) {
                   {getCategoryName(article.categoryId)}
                 </span>
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
-                  article.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-ink-500"
+                  article.isPublished
+                    ? "bg-green-100 text-green-700"
+                    : article.status === "scheduled"
+                    ? "bg-amber-100 text-amber-700"
+                    : "bg-gray-100 text-ink-500"
                 }`}>
-                  {article.isPublished ? "Published" : "Draft"}
+                  {article.isPublished
+                    ? "Published"
+                    : article.status === "scheduled" && article.scheduledAt
+                    ? `Scheduled · ${new Date(article.scheduledAt).toLocaleString()}`
+                    : "Draft"}
                 </span>
                 {article.type && article.type !== "normal" && (
                   <span className="text-[11px] px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium capitalize">

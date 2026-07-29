@@ -6,6 +6,8 @@
 "use client";
 
 import { AuthorByline } from "../shared/ArticleLinks";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function ArticleCard({ article }) {
   return (
@@ -53,6 +55,7 @@ function Pagination({ current, total }) {
 
 export default function CategoryTemplate4({ data }) {
   const { hero, tabs, articles, newsletter, pagination } = data;
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("category-page");
 
   return (
     <main className="min-h-screen bg-white">
@@ -120,9 +123,15 @@ export default function CategoryTemplate4({ data }) {
                 {newsletter.description}
               </p>
             </div>
-            <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-sm rounded-full transition-colors duration-200">
-              {newsletter.buttonLabel}
-            </button>
+            <form onSubmit={submit} className="flex flex-col gap-2 w-full">
+              <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-gray-300 rounded-full px-4 py-2.5 text-sm focus:outline-none" />
+              <button type="submit" disabled={status === "loading"}
+                className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-sm rounded-full transition-colors duration-200 disabled:opacity-60">
+                {status === "loading" ? "Signing up…" : newsletter.buttonLabel}
+              </button>
+            </form>
+            <NewsletterStatus status={status} message={message} />
           </div>
         </div>
       </div>

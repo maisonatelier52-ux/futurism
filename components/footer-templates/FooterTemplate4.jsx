@@ -1,5 +1,6 @@
 // Variation 4: Dark theme — 4 cols: logo+social | center+legal | categories bold | newsletter+disclaimer
 import FooterSocialIcons from './FooterSocialIcons';
+import { NewsletterInline } from './NewsletterInput';
 import { DEFAULT_FOOTER_CONFIG } from '@/lib/footerDefaults';
 
 export default function FooterTemplate4({ config }) {
@@ -40,13 +41,7 @@ export default function FooterTemplate4({ config }) {
               <p className="text-sm font-black uppercase leading-tight">{(c.newsletter?.heading || '').replace('\n', ' ')}</p>
               <p className="text-xs text-gray-400 mt-1">{c.newsletter?.subtext}</p>
             </div>
-            <div className="flex gap-2">
-              <input type="email" placeholder="Enter your email"
-                className="flex-1 h-10 px-3 bg-white/10 border border-white/20 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-white/50" />
-              <button className="h-10 px-4 bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-gray-200 transition whitespace-nowrap">
-                {c.newsletter?.buttonLabel || 'SIGN UP'}
-              </button>
-            </div>
+            <NewsletterInline dark newsletter={c.newsletter} />
             <p className="text-xs text-gray-600 leading-relaxed">{c.disclaimer}</p>
           </div>
         </div>

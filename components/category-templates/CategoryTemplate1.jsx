@@ -6,6 +6,8 @@
 "use client";
 
 import { AuthorByline } from "../shared/ArticleLinks";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function RailItem({ article }) {
   return (
@@ -56,6 +58,7 @@ function TrendingCard({ article, index }) {
 
 export default function CategoryTemplate1({ data }) {
   const { hero, tabs, featured, latest, deepDive, newsletter } = data;
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("category-page");
 
   return (
     <main className="min-h-screen bg-white">
@@ -165,13 +168,16 @@ export default function CategoryTemplate1({ data }) {
             <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black text-gray-900 break-words">{newsletter.title}</h3>
             <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500 mt-1">{newsletter.description}</p>
           </div>
-          <div className="flex gap-2 w-full md:w-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 md:w-64 border border-gray-300 rounded-lg px-4 py-2.5 text-sm" />
-            <button className="bg-indigo-900 hover:bg-indigo-800 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-6 py-2.5 rounded-lg">
-              {newsletter.buttonLabel}
+          <form onSubmit={submit} className="flex gap-2 w-full md:w-auto">
+            <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 md:w-64 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none" />
+            <button type="submit" disabled={status === "loading"}
+              className="bg-indigo-900 hover:bg-indigo-800 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-6 py-2.5 rounded-lg disabled:opacity-60 whitespace-nowrap">
+              {status === "loading" ? "..." : newsletter.buttonLabel}
             </button>
-          </div>
+          </form>
         </div>
+        <NewsletterStatus status={status} message={message} />
       </div>
     </main>
   );

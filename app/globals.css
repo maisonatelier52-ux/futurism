@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Tailwind v4 defaults dark: to the OS-level prefers-color-scheme media
+   query. This app has a manual light/dark toggle (see
+   components/theme/ThemeProvider.jsx) that sets a `dark` class on <html>,
+   so dark: needs to respond to that class instead -- otherwise the toggle
+   button would do nothing for anyone whose OS preference disagrees with
+   their in-app choice. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-serif: "Bitter", serif;
   --font-sans: "Inter", system-ui, sans-serif;
@@ -22,6 +30,42 @@ body {
 .footer-heading {
   font-family: var(--font-serif);
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Public-site dark mode (scoped via the .dark class on <html>, set by the
+   theme toggle). Most public components style themselves with inline
+   `style={{ backgroundColor: c.bgColor }}` from saved header/footer/theme
+   config rather than Tailwind classes, so those keep whatever color the
+   admin configured them with -- that's a separate, larger project (making
+   every configurable color dark-mode-aware) and out of scope here. This
+   covers the page chrome around them: page background, default text,
+   borders, and cards/sections that DO use Tailwind's default gray/white
+   palette, which is most of the homepage/article/author/category body
+   content.
+
+   Scoped under html.dark body:not(.admin-root) as a defensive measure --
+   the .dark class is only ever set by the PUBLIC ThemeProvider (app/layout.js),
+   never by the separate /admin layout, so this never affects the admin
+   panel today; the :not(.admin-root) guard is extra insurance in case the
+   two layouts are ever merged later. AdminShell can add "admin-root" to its
+   wrapper if that merge ever happens -- not needed today since the layouts
+   are fully separate.
+   ────────────────────────────────────────────────────────────────────── */
+html.dark body {
+  background-color: #0a0a0f;
+  color: #e8e8ec;
+}
+html.dark body:not(.admin-root) .bg-white  { background-color: #15151c; }
+html.dark body:not(.admin-root) .bg-gray-50 { background-color: #0a0a0f; }
+html.dark body:not(.admin-root) .bg-gray-100 { background-color: #1c1c24; }
+html.dark body:not(.admin-root) .text-zinc-900,
+html.dark body:not(.admin-root) .text-gray-900 { color: #e8e8ec; }
+html.dark body:not(.admin-root) .text-gray-700,
+html.dark body:not(.admin-root) .text-gray-600 { color: #b8b8c2; }
+html.dark body:not(.admin-root) .text-gray-500,
+html.dark body:not(.admin-root) .text-gray-400 { color: #8a8a96; }
+html.dark body:not(.admin-root) .border-gray-200,
+html.dark body:not(.admin-root) .border-gray-100 { border-color: #2a2a34; }
 
 /* ──────────────────────────────────────────────────────────────────────
    Admin-only utility classes (scoped — none of these touch body/font-family

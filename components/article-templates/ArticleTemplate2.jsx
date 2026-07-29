@@ -7,10 +7,13 @@
 import ArticleBody from "./ArticleBody";
 import { AuthorByline, CategoryTag, ShareIcons } from "../shared/ArticleLinks";
 import { SITE_URL } from "@/lib/apiConfig";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 export default function ArticleTemplate2({ article, related }) {
   const { mostPopular, aroundTheWeb, moreInCategory } = related;
   const readNext = (related.moreInCategory || []).slice(0, 2);
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("article-page");
 
   return (
     <main className="min-h-screen bg-white">
@@ -133,9 +136,15 @@ export default function ArticleTemplate2({ article, related }) {
                 <p className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide mb-1 break-words">Futurism</p>
                 <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-[0.9] mb-3 break-words">The Future Is</h3>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs mb-4">Sign up for our daily newsletter</p>
-                <button className="w-full bg-white text-red-600 font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-4 py-3 rounded">
-                  Sign Up
-                </button>
+                <form onSubmit={submit} className="space-y-2">
+                  <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-10 px-3 bg-white text-black text-sm border border-white focus:outline-none rounded" />
+                  <button type="submit" disabled={status === "loading"}
+                    className="w-full bg-white text-red-600 font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-4 py-3 rounded disabled:opacity-60">
+                    {status === "loading" ? "Signing up…" : "Sign Up"}
+                  </button>
+                </form>
+                <NewsletterStatus status={status} message={message} light />
               </div>
             </div>
           </aside>

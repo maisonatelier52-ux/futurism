@@ -8,11 +8,15 @@
 import { useState } from "react";
 import ArticleBody, { extractHeadings } from "./ArticleBody";
 import { AuthorByline } from "../shared/ArticleLinks";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 export default function ArticleTemplate3({ article, related }) {
   const { mostPopular, aroundTheWeb, moreInCategory } = related;
   const headings = extractHeadings(article.body);
   const [showMore, setShowMore] = useState(false);
+  const sidebarForm = useNewsletterSubscribe("article-page-sidebar");
+  const promoForm = useNewsletterSubscribe("article-page-promo");
   const combinedGrid = [...aroundTheWeb, ...moreInCategory];
   const visibleGrid = showMore ? combinedGrid : combinedGrid.slice(0, 5);
 
@@ -81,11 +85,15 @@ export default function ArticleTemplate3({ article, related }) {
                 <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mb-3">
                   Get our best stories delivered straight to your inbox.
                 </p>
-                <input type="email" placeholder="Enter your email"
-                  className="w-full h-9 px-3 border border-gray-300 text-xs mb-2 focus:outline-none bg-white" />
-                <button className="w-full h-9 bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs rounded">
-                  Sign Up
-                </button>
+                <form onSubmit={sidebarForm.submit}>
+                  <input type="email" placeholder="Enter your email" value={sidebarForm.email} onChange={(e) => sidebarForm.setEmail(e.target.value)}
+                    className="w-full h-9 px-3 border border-gray-300 text-xs mb-2 focus:outline-none bg-white" />
+                  <button type="submit" disabled={sidebarForm.status === "loading"}
+                    className="w-full h-9 bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs rounded disabled:opacity-60">
+                    {sidebarForm.status === "loading" ? "Signing up…" : "Sign Up"}
+                  </button>
+                </form>
+                <NewsletterStatus status={sidebarForm.status} message={sidebarForm.message} />
               </div>
             </div>
           </aside>
@@ -147,9 +155,15 @@ export default function ArticleTemplate3({ article, related }) {
                 <p className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide mb-1 break-words">Futurism</p>
                 <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black uppercase leading-[0.9] mb-3 break-words">The Future Is</h3>
                 <p className="font-[family-name:var(--font-owners-text)] text-xs mb-4">Sign up for our daily newsletter</p>
-                <button className="w-full bg-white text-red-600 font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-4 py-3 rounded">
-                  Sign Up
-                </button>
+                <form onSubmit={promoForm.submit} className="space-y-2">
+                  <input type="email" placeholder="Enter your email" value={promoForm.email} onChange={(e) => promoForm.setEmail(e.target.value)}
+                    className="w-full h-10 px-3 bg-white text-black text-sm border border-white focus:outline-none rounded" />
+                  <button type="submit" disabled={promoForm.status === "loading"}
+                    className="w-full bg-white text-red-600 font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-4 py-3 rounded disabled:opacity-60">
+                    {promoForm.status === "loading" ? "Signing up…" : "Sign Up"}
+                  </button>
+                </form>
+                <NewsletterStatus status={promoForm.status} message={promoForm.message} light />
               </div>
             </div>
           </aside>

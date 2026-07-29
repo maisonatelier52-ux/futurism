@@ -1,13 +1,15 @@
-import AdminShell from "@/components/layout/AdminShell";
-import { Newspaper, Eye, Users2, TrendingUp, PanelTop, PanelBottom, LayoutTemplate, ArrowRight, UserCircle } from "lucide-react";
-import Link from "next/link";
+"use client";
 
-const STATS = [
-  { label: "Published Articles", value: "—",      delta: "from MongoDB",      icon: Newspaper },
-  { label: "Homepage Views (24h)", value: "—",    delta: "analytics pending",  icon: Eye },
-  { label: "Active Authors",      value: "—",      delta: "from MongoDB",      icon: Users2 },
-  { label: "Avg. Read Time",      value: "—",      delta: "analytics pending", icon: TrendingUp },
-];
+import { useEffect, useState } from "react";
+import AdminShell from "@/components/layout/AdminShell";
+import { useToast } from "@/components/ui/Toast";
+import { apiFetch } from "@/lib/apiConfig";
+import {
+  Newspaper, Eye, Users2, TrendingUp, PanelTop, PanelBottom, LayoutTemplate,
+  ArrowRight, UserCircle, FolderTree, Settings as SettingsIcon,
+  ShieldCheck, History,
+} from "lucide-react";
+import Link from "next/link";
 
 const BUILDERS = [
   { href: "/admin/header-builder",   title: "Header Builder",   desc: "Edit navigation, logo, breaking news",    icon: PanelTop },
@@ -22,7 +24,81 @@ const QUICK_LINKS = [
   { href: "/admin/settings",   label: "Settings",     icon: PanelTop },
 ];
 
+const ENTITY_ICONS = {
+  article: Newspaper,
+  author: UserCircle,
+  category: FolderTree,
+  settings: SettingsIcon,
+  admin: ShieldCheck,
+};
+
+function timeAgo(dateStr) {
+  const diffMs = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString();
+}
+
+function describeActivity(entry) {
+  if (entry.message) return entry.message;
+  const label = entry.entityLabel ? ` "${entry.entityLabel}"` : "";
+  return `${entry.action} ${entry.entityType}${label}`;
+}
+
 export default function DashboardPage() {
+  const [stats, setStats] = useState(null);
+  const [activity, setActivity] = useState(null);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    let active = true;
+
+    apiFetch("/api/admin/dashboard/stats")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => { if (active) setStats(d.stats); })
+      .catch(() => { if (active) showToast("Failed to load dashboard stats", { type: "error" }); });
+
+    apiFetch("/api/admin/activity-log/recent?limit=6")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => { if (active) setActivity(d.entries || []); })
+      .catch(() => { if (active) setActivity([]); });
+
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const STATS = [
+    {
+      label: "Published Articles",
+      value: stats ? stats.publishedArticles : "—",
+      delta: stats ? `${stats.totalArticles} total (incl. drafts)` : "from MongoDB",
+      icon: Newspaper,
+    },
+    {
+      label: "Total Views",
+      value: stats ? stats.totalViews.toLocaleString() : "—",
+      delta: stats && !stats.viewsTrackingEnabled ? "all-time · 24h tracking not yet set up" : "last 24 hours",
+      icon: Eye,
+    },
+    {
+      label: "Active Authors",
+      value: stats ? stats.activeAuthors : "—",
+      delta: stats ? `${stats.totalAuthors} total authors` : "from MongoDB",
+      icon: Users2,
+    },
+    {
+      label: "Avg. Read Time",
+      value: stats && stats.avgReadTimeMinutes != null ? `${stats.avgReadTimeMinutes} min` : "—",
+      delta: stats && stats.avgReadTimeMinutes == null ? "no read times set yet" : "across published articles",
+      icon: TrendingUp,
+    },
+  ];
+
   return (
     <AdminShell title="Dashboard">
       <div className="p-5 lg:p-8 max-w-7xl mx-auto">
@@ -84,24 +160,38 @@ export default function DashboardPage() {
           })}
         </div>
 
-        {/* Recent activity placeholder */}
+        {/* Recent activity */}
         <div className="rounded-card border border-border bg-white shadow-soft overflow-hidden">
-          <div className="px-5 py-4 border-b border-border">
+          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <h3 className="text-[14px] font-semibold text-ink-900">Recent Activity</h3>
+            <Link href="/admin/activity-log" className="text-[12.5px] font-medium text-primary hover:underline flex items-center gap-1">
+              View all <ArrowRight size={12} />
+            </Link>
           </div>
           <div className="divide-y divide-border">
-            {[
-              { who: "Admin", what: "Admin panel is set up and ready", when: "Just now" },
-              { who: "System", what: "MongoDB connection configured", when: "Setup" },
-              { who: "System", what: "Header, Footer, and Homepage builders loaded", when: "Setup" },
-            ].map((a, i) => (
-              <div key={i} className="px-5 py-3.5 flex items-center justify-between gap-4">
-                <p className="text-[13px] text-ink-700">
-                  <span className="font-semibold text-ink-900">{a.who}</span> {a.what}
-                </p>
-                <span className="text-[12px] text-ink-400 whitespace-nowrap">{a.when}</span>
+            {activity === null ? (
+              <div className="px-5 py-6 text-[13px] text-ink-400">Loading…</div>
+            ) : activity.length === 0 ? (
+              <div className="px-5 py-6 text-[13px] text-ink-400 flex items-center gap-2">
+                <History size={14} /> No activity recorded yet.
               </div>
-            ))}
+            ) : (
+              activity.map((entry) => {
+                const Icon = ENTITY_ICONS[entry.entityType] || History;
+                return (
+                  <div key={entry._id} className="px-5 py-3.5 flex items-center gap-3">
+                    <div className="h-7 w-7 shrink-0 rounded-lg bg-primary-50 flex items-center justify-center text-primary">
+                      <Icon size={13} />
+                    </div>
+                    <p className="text-[13px] text-ink-700 flex-1 min-w-0">
+                      <span className="font-semibold text-ink-900">{entry.actor || "System"}</span>{" "}
+                      {describeActivity(entry)}
+                    </p>
+                    <span className="text-[12px] text-ink-400 whitespace-nowrap shrink-0">{timeAgo(entry.createdAt)}</span>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

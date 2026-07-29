@@ -1,5 +1,6 @@
 // Variation 6: Dark left logo panel + 3 light cols: nav/legal | categories 2-col | social+disclaimer
 import FooterSocialIcons from './FooterSocialIcons';
+import { NewsletterInline } from './NewsletterInput';
 import { DEFAULT_FOOTER_CONFIG } from '@/lib/footerDefaults';
 
 function ColHeader({ icon, label }) {
@@ -22,13 +23,7 @@ export default function FooterTemplate6({ config }) {
           <div className="lg:col-span-3 bg-[#111111] text-white p-8 flex flex-col gap-5">
             <img src={c.logo} alt="Futurism" className="h-10 w-auto invert" />
             <p className="text-gray-400 text-xs leading-relaxed">{c.newsletter?.subtext}</p>
-            <div className="flex gap-2">
-              <input type="email" placeholder="Enter your email"
-                className="flex-1 min-w-0 h-9 px-3 bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none" />
-              <button className="h-9 px-3 bg-white text-black font-bold text-[10px] uppercase tracking-widest hover:bg-gray-200 transition whitespace-nowrap">
-                {c.newsletter?.buttonLabel || 'SIGN UP'}
-              </button>
-            </div>
+            <NewsletterInline dark newsletter={c.newsletter} />
           </div>
 
           {/* Right 3 cols */}

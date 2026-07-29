@@ -1,6 +1,10 @@
 // Variation 5: Magazine style 5-col — logo+social | icon+nav col | icon+legal col | categories 2-col | newsletter+disclaimer
+"use client";
+
 import FooterSocialIcons from './FooterSocialIcons';
 import { DEFAULT_FOOTER_CONFIG } from '@/lib/footerDefaults';
+import { useNewsletterSubscribe } from '@/lib/useNewsletterSubscribe';
+import NewsletterStatus from '@/components/shared/NewsletterStatus';
 
 // Small icon label for section headers
 function ColHeader({ icon, label }) {
@@ -14,6 +18,7 @@ function ColHeader({ icon, label }) {
 
 export default function FooterTemplate5({ config }) {
   const c = config || DEFAULT_FOOTER_CONFIG;
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("footer");
   return (
     <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
@@ -55,13 +60,16 @@ export default function FooterTemplate5({ config }) {
           {/* Col 5: Newsletter + disclaimer */}
           <div className="sm:col-span-2 lg:col-span-1">
             <p className="text-sm font-black uppercase leading-tight mb-1">{(c.newsletter?.heading || '').replace('\n', ' ')}</p>
-            <div className="flex gap-2 mb-3">
+            <form onSubmit={submit} className="flex gap-2 mb-3">
               <input type="email" placeholder="Enter your email"
+                value={email} onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 min-w-0 h-9 px-3 border border-gray-300 text-xs focus:outline-none bg-white" />
-              <button className="h-9 px-3 bg-[#111] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-black transition whitespace-nowrap">
-                {c.newsletter?.buttonLabel || 'SIGN UP'}
+              <button type="submit" disabled={status === "loading"}
+                className="h-9 px-3 bg-[#111] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-black transition whitespace-nowrap disabled:opacity-60">
+                {status === "loading" ? "..." : (c.newsletter?.buttonLabel || 'SIGN UP')}
               </button>
-            </div>
+            </form>
+            <NewsletterStatus status={status} message={message} />
             <p className="text-[10px] text-gray-400 leading-relaxed">{c.disclaimer}</p>
             <p className="text-[10px] text-gray-400 mt-2">{c.copyright}</p>
           </div>

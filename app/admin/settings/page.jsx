@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { apiFetch } from '@/lib/apiConfig';
+import { apiFetch, API_BASE } from '@/lib/apiConfig';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState(null);
@@ -60,7 +60,7 @@ export default function SettingsPage() {
     </div>
   );
 
-  const tabs = ['branding', 'colors', 'navigation', 'footer', 'social'];
+  const tabs = ['branding', 'colors', 'navigation', 'footer', 'social', 'seo'];
 
 return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -169,6 +169,64 @@ return (
           {inp('Instagram Handle', 'socialInstagram', '@futurism')}
           {inp('Twitter / X Handle', 'socialTwitter', '@futurism')}
           {inp('Substack URL', 'socialSubstack', 'https://futurism.substack.com')}
+        </div>
+      )}
+
+      {/* SEO / Sitemap & Robots */}
+      {tab === 'seo' && (
+        <div className="bg-white p-6 shadow-sm space-y-5">
+          {inp('Site URL', 'seoSiteUrl', 'https://futurism.com')}
+          <p className="text-xs text-gray-400 -mt-3">
+            Used as the base URL for <code className="bg-gray-100 px-1">/sitemap.xml</code> and{' '}
+            <code className="bg-gray-100 px-1">/robots.txt</code>. Leave blank to use the backend&apos;s
+            <code className="bg-gray-100 px-1 ml-1">SITE_URL</code> environment variable.
+          </p>
+
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold uppercase tracking-widest text-gray-500">
+              Include in Sitemap
+            </label>
+            {[
+              ['Articles', 'seoSitemapIncludeArticles'],
+              ['Authors', 'seoSitemapIncludeAuthors'],
+              ['Categories', 'seoSitemapIncludeCategories'],
+            ].map(([label, key]) => (
+              <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={settings[key] !== false}
+                  onChange={(e) => set(key, e.target.checked)}
+                  className="accent-red-600"
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-widest text-gray-500 mb-1">
+              Extra robots.txt Rules
+            </label>
+            <textarea
+              value={settings.seoRobotsExtraRules || ''}
+              onChange={(e) => set('seoRobotsExtraRules', e.target.value)}
+              rows={4}
+              placeholder={'Disallow: /drafts\nDisallow: /preview'}
+              className="w-full px-3 py-2 border border-gray-300 text-sm font-mono focus:outline-none focus:border-red-500 resize-none"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Raw lines appended to the generated robots.txt, after the default Allow/Disallow rules.
+            </p>
+          </div>
+
+          <div className="pt-2 border-t border-gray-100 flex flex-wrap gap-4 text-xs">
+            <a href={`${API_BASE}/sitemap.xml`} target="_blank" rel="noreferrer" className="text-red-600 hover:underline">
+              Preview sitemap.xml ↗
+            </a>
+            <a href={`${API_BASE}/robots.txt`} target="_blank" rel="noreferrer" className="text-red-600 hover:underline">
+              Preview robots.txt ↗
+            </a>
+          </div>
         </div>
       )}
     </div>

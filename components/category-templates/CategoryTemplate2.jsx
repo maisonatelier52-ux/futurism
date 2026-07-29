@@ -6,6 +6,8 @@
 "use client";
 
 import { AuthorByline } from "../shared/ArticleLinks";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function RailItem({ article }) {
   return (
@@ -70,6 +72,7 @@ function Pagination({ current, total }) {
 
 export default function CategoryTemplate2({ data }) {
   const { hero, tabs, featured, latest, articles, newsletter, pagination } = data;
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("category-page");
 
   return (
     <main className="min-h-screen bg-white">
@@ -145,11 +148,16 @@ export default function CategoryTemplate2({ data }) {
             <h3 className="font-[family-name:var(--font-bitter)] italic text-2xl text-gray-900">{newsletter.title}</h3>
             <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500 mt-1">{newsletter.description}</p>
           </div>
-          <div className="flex gap-2 w-full md:w-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 md:w-64 border border-gray-300 rounded-full px-5 py-3 text-sm" />
-            <button className="bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-full">
-              {newsletter.buttonLabel}
-            </button>
+          <div className="w-full md:w-auto">
+            <form onSubmit={submit} className="flex gap-2 w-full md:w-auto">
+              <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 md:w-64 border border-gray-300 rounded-full px-5 py-3 text-sm focus:outline-none" />
+              <button type="submit" disabled={status === "loading"}
+                className="bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-full disabled:opacity-60 whitespace-nowrap">
+                {status === "loading" ? "..." : newsletter.buttonLabel}
+              </button>
+            </form>
+            <NewsletterStatus status={status} message={message} />
           </div>
         </div>
       </div>

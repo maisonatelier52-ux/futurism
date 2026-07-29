@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Newspaper, FolderTree, LayoutTemplate,
   PanelTop, PanelBottom, ImageIcon, Users2, Settings as SettingsIcon,
-  UserCircle, X, LogOut,
+  UserCircle, X, LogOut, History,
 } from "lucide-react";
 import { useState } from "react";
 import { apiFetch } from "@/lib/apiConfig";
@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { href: "/admin/header-builder",   label: "Header Builder",   icon: PanelTop },
   { href: "/admin/footer-builder",   label: "Footer Builder",   icon: PanelBottom },
   { href: "/admin/media-library",    label: "Media Library",    icon: ImageIcon },
+  { href: "/admin/activity-log",     label: "Activity Log",     icon: History },
   { href: "/admin/users",            label: "Users",            icon: Users2 },
   { href: "/admin/settings",         label: "Settings",         icon: SettingsIcon },
 ];

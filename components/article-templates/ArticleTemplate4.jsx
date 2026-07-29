@@ -7,6 +7,8 @@
 
 import ArticleBody from "./ArticleBody";
 import { AuthorByline, CategoryTag } from "../shared/ArticleLinks";
+import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
+import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function ArticleCard({ article }) {
   return (
@@ -35,6 +37,7 @@ function AdPlaceholder() {
 
 export default function ArticleTemplate4({ article, related }) {
   const { mostPopular, aroundTheWeb, moreInCategory } = related;
+  const { email, setEmail, status, message, submit } = useNewsletterSubscribe("article-page");
 
   return (
     <main className="min-h-screen bg-white">
@@ -82,13 +85,17 @@ export default function ArticleTemplate4({ article, related }) {
                   Can't-miss innovations from the bleeding edge of science and tech
                 </p>
               </div>
-              <div className="flex gap-2 flex-1 sm:max-w-sm">
-                <input type="email" placeholder="Enter your email"
-                  className="flex-1 h-10 px-3 border border-gray-300 text-sm font-[family-name:var(--font-owners-text)] focus:outline-none bg-white" />
-                <button className="h-10 px-5 bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs rounded-full transition-colors whitespace-nowrap">
-                  Sign Up
-                </button>
-              </div>
+              <form onSubmit={submit} className="flex flex-col gap-1 flex-1 sm:max-w-sm">
+                <div className="flex gap-2">
+                  <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    className="flex-1 h-10 px-3 border border-gray-300 text-sm font-[family-name:var(--font-owners-text)] focus:outline-none bg-white" />
+                  <button type="submit" disabled={status === "loading"}
+                    className="h-10 px-5 bg-red-600 hover:bg-red-700 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs rounded-full transition-colors whitespace-nowrap disabled:opacity-60">
+                    {status === "loading" ? "..." : "Sign Up"}
+                  </button>
+                </div>
+                <NewsletterStatus status={status} message={message} />
+              </form>
             </div>
 
             <ArticleBody blocks={article.body} />

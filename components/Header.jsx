@@ -12,6 +12,7 @@ import HeaderTemplate6 from './header-templates/HeaderTemplate6';
 import HeaderTemplate7 from './header-templates/HeaderTemplate7';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 import { API_BASE } from '@/lib/apiConfig';
+import ThemeToggle from './theme/ThemeToggle';
 
 const TEMPLATES = {
   'template-1': HeaderTemplate1,
@@ -37,5 +38,13 @@ async function getHeaderConfig() {
 export default async function Header() {
   const config = await getHeaderConfig();
   const ActiveTemplate = TEMPLATES[config?.activeTemplate] || HeaderTemplate1;
-  return <ActiveTemplate config={config} />;
+  return (
+    <>
+      <ActiveTemplate config={config} />
+      {/* Rendered here (not inside any template) so the toggle shows up on
+          every page using this shared Header, across all 7 templates,
+          without needing to edit each template file individually. */}
+      <ThemeToggle />
+    </>
+  );
 }
