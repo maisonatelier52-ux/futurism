@@ -16,41 +16,41 @@ function HeroSection({ hero, secondary }) {
     <section className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
         {/* Hero Article */}
-        <div className="md:col-span-2 md:border-r border-gray-200 md:pr-6">
+        <div className="md:col-span-2 md:border-r border-gray-200 dark:border-gray-800 md:pr-6">
           <a href={hero.href || "#"} className="group block">
-            <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 mb-4">
+            <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24] mb-4">
               <img src={hero.image} alt={hero.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
             </div>
             <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 block mb-2 text-center">
               {hero.category}
             </span>
-            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl md:text-4xl font-black leading-tight uppercase text-gray-900 text-center group-hover:underline mb-4 px-2 break-words hyphens-auto md:line-clamp-3 line-clamp-none">
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl md:text-4xl font-black leading-tight uppercase text-gray-900 dark:text-gray-100 text-center group-hover:underline mb-4 px-2 break-words hyphens-auto md:line-clamp-3 line-clamp-none">
               {hero.title}
             </h2>
             <p className="font-[family-name:var(--font-bitter)] italic text-xl text-[#4a90a4] text-center leading-relaxed mb-3 px-4">
               "{hero.excerpt}"
             </p>
           </a>
-          <p className="font-[family-name:var(--font-owners-text)] text-xs text-center text-gray-500">
-            <AuthorByline author={hero.author} authorHref={hero.authorHref} nameClassName="font-semibold text-gray-800" />
+          <p className="font-[family-name:var(--font-owners-text)] text-xs text-center text-gray-500 dark:text-gray-400">
+            <AuthorByline author={hero.author} authorHref={hero.authorHref} nameClassName="font-semibold text-gray-800 dark:text-gray-200" />
           </p>
         </div>
 
         {/* Secondary Articles */}
-        <div className="flex flex-col divide-y divide-gray-200 md:pl-6">
+        <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-800 md:pl-6">
           {secondary.map((article) => (
             <div key={article.id} className="flex flex-col gap-3 py-5 first:pt-0 md:first:pt-0">
               <a href={article.href || "#"} className="group flex flex-col gap-3">
                 <CategoryTag category={article.category} categoryHref={article.categoryHref} className="text-[10px] font-bold uppercase tracking-widest text-red-600" />
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black leading-none uppercase text-gray-900 group-hover:underline break-words">
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-2xl font-black leading-none uppercase text-gray-900 dark:text-gray-100 group-hover:underline break-words">
                   {article.title}
                 </h3>
-                <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
                   <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
                 </div>
               </a>
-              <p className="text-xs text-gray-500">
-                <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-800" />
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-800 dark:text-gray-200" />
               </p>
             </div>
           ))}
@@ -63,27 +63,27 @@ function HeroSection({ hero, secondary }) {
 function LatestStoriesRail({ latest }) {
   return (
     <aside className="w-full">
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-300">
+      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-300 dark:border-gray-700">
         <span className="relative inline-flex h-2.5 w-2.5">
           <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60 animate-ping"></span>
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600 shadow-md shadow-red-500/40"></span>
         </span>
-        <h2 className="font-[family-name:var(--font-owners-text)] text-xs font-black uppercase tracking-widest text-gray-900">
+        <h2 className="font-[family-name:var(--font-owners-text)] text-xs font-black uppercase tracking-widest text-gray-900 dark:text-gray-100">
           Our Latest Stories
         </h2>
       </div>
-      <ul className="divide-y divide-gray-200">
+      <ul className="divide-y divide-gray-200 dark:divide-gray-800">
         {latest.map((story) => (
           <li key={story.id} className="py-5">
             <a href={story.href || "#"} className="group block">
               <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 block mb-1">
                 {story.category}
               </span>
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline mb-1 break-words">
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline mb-1 break-words">
                 {story.title}
               </h3>
             </a>
-            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-1">
+            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400 mt-1">
               <AuthorByline author={story.author} authorHref={story.authorHref} />
             </p>
           </li>
@@ -96,27 +96,27 @@ function LatestStoriesRail({ latest }) {
 function TopStoriesGrid({ topStories }) {
   return (
     <section className="w-full py-1">
-      <div className="flex items-center gap-3 mb-6 border-b border-gray-300 pb-3">
+      <div className="flex items-center gap-3 mb-6 border-b border-gray-300 dark:border-gray-700 pb-3">
         <h2 className="font-[family-name:var(--font-scale)] text-sm font-bold uppercase tracking-widest text-red-600">Top Stories</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {topStories.map((story) => (
-          <div key={story.id} className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div key={story.id} className="group flex flex-col bg-white dark:bg-[#15151c] rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-200">
             <a href={story.href || "#"} className="flex flex-col flex-1">
-              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
                 <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
               <div className="flex flex-col flex-1 p-4 text-center">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 block mb-2">{story.category}</span>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base md:text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline mb-3 flex-1 break-words">{story.title}</h3>
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base md:text-lg font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline mb-3 flex-1 break-words">{story.title}</h3>
               </div>
             </a>
             <div className="px-4 pb-4 text-center">
-              <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mb-4">
+              <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400 mb-4">
                 <AuthorByline author={story.author} authorHref={story.authorHref} />
               </p>
               <a href={story.href || "#"} className="flex justify-center">
-                <span className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600 transition-colors duration-200">
+                <span className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600 transition-colors duration-200">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
@@ -133,27 +133,27 @@ function TopStoriesGrid({ topStories }) {
 function CategorySectionBlock({ title, articles }) {
   return (
     <section className="w-full py-6">
-      <div className="flex items-center gap-3 mb-4 border-b border-gray-300 pb-2">
+      <div className="flex items-center gap-3 mb-4 border-b border-gray-300 dark:border-gray-700 pb-2">
         <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">{title}</h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
         {articles.map((article) => (
           <div key={article.id} className="group flex flex-col gap-2">
             <a href={article.href || "#"} className="flex flex-col gap-2">
-              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+              <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
               <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1">{article.category}</span>
-              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
+              <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline break-words">{article.title}</h3>
             </a>
-            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+            <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400">
               <AuthorByline author={article.author} authorHref={article.authorHref} />
             </p>
           </div>
         ))}
       </div>
       <div className="flex justify-center mt-2">
-        <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-8 py-3 rounded-full border border-gray-400 text-gray-800 hover:border-gray-800 hover:bg-gray-900 hover:text-white transition-all duration-200">
+        <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-8 py-3 rounded-full border border-gray-400 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:border-gray-800 dark:hover:border-gray-700 hover:bg-gray-900 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900 transition-all duration-200">
           Read More
         </button>
       </div>
@@ -164,20 +164,20 @@ function CategorySectionBlock({ title, articles }) {
 function TheFeedList({ feed }) {
   return (
     <section className="w-full">
-      <div className="border-b border-gray-300 pb-2 mb-2">
+      <div className="border-b border-gray-300 dark:border-gray-700 pb-2 mb-2">
         <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">The Feed</h2>
       </div>
-      <ul className="divide-y divide-dashed divide-gray-300">
+      <ul className="divide-y divide-dashed divide-gray-300 dark:divide-gray-700">
         {feed.map((article) => (
           <li key={article.id} className="flex flex-row gap-4 py-4 items-start">
             <a href={article.href || "#"} className="group flex flex-row gap-4 flex-1">
-              <div className="flex-shrink-0 w-36 sm:w-44 lg:w-80 aspect-[4/3] overflow-hidden bg-gray-100">
+              <div className="flex-shrink-0 w-36 sm:w-44 lg:w-80 aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               </div>
               <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                 <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl sm:text-2xl font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
-                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+                <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl sm:text-2xl font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline break-words">{article.title}</h3>
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400">
                   <AuthorByline author={article.author} authorHref={article.authorHref} />
                 </p>
               </div>
@@ -186,7 +186,7 @@ function TheFeedList({ feed }) {
         ))}
       </ul>
       <div className="flex justify-center pt-6">
-        <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-8 py-3 rounded-full border border-gray-400 text-gray-800 hover:border-gray-800 hover:bg-gray-900 hover:text-white transition-all duration-200">
+        <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-8 py-3 rounded-full border border-gray-400 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:border-gray-800 dark:hover:border-gray-700 hover:bg-gray-900 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900 transition-all duration-200">
           More Stories
         </button>
       </div>
@@ -196,6 +196,11 @@ function TheFeedList({ feed }) {
 
 function FeedNewsletterBox({ newsletter }) {
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("homepage-feed");
+  // This card is intentionally always-dark (bg-[#1f2326]/text-white), in
+  // both site themes -- like the header/footer newsletter boxes, its
+  // internal contrast (light text on the dark card, dark text on the white
+  // input/button) is already correct regardless of the page's theme, so
+  // nothing here gets dark: variants.
   return (
     <div className="bg-[#1f2326] text-white p-5">
       <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2 break-words">{newsletter.title}</h3>
@@ -219,28 +224,28 @@ function FeedNewsletterBox({ newsletter }) {
 
 function FuturismOriginalsBox({ originals }) {
   return (
-    <div className="border border-gray-200 bg-white">
-      <div className="border-b border-gray-200 px-4 py-2">
-        <h2 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900">{originals.sectionTitle}</h2>
+    <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151c]">
+      <div className="border-b border-gray-200 dark:border-gray-800 px-4 py-2">
+        <h2 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100">{originals.sectionTitle}</h2>
       </div>
-      <div className="w-full aspect-[16/9] overflow-hidden bg-gray-100">
+      <div className="w-full aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
         <img src={originals.featuredImage} alt={originals.sectionTitle} className="w-full h-full object-cover" />
       </div>
-      <ul className="divide-y divide-dashed divide-gray-200">
+      <ul className="divide-y divide-dashed divide-gray-200 dark:divide-gray-800">
         {originals.items.map((article) => (
           <li key={article.id} className="px-4 py-3">
             <a href={article.href || "#"} className="group block">
               <span className="font-[family-name:var(--font-scale)] text-[9px] font-semibold uppercase tracking-widest text-red-600 block mb-1">{article.category}</span>
-              <h3 className="font-[family-name:var(--font-owners-text)] text-sm leading-snug text-gray-900 group-hover:underline mb-1">{article.title}</h3>
+              <h3 className="font-[family-name:var(--font-owners-text)] text-sm leading-snug text-gray-900 dark:text-gray-100 group-hover:underline mb-1">{article.title}</h3>
             </a>
-            <p className="font-[family-name:var(--font-owners-text)] text-[10px] text-gray-500">
+            <p className="font-[family-name:var(--font-owners-text)] text-[10px] text-gray-500 dark:text-gray-400">
               <AuthorByline author={article.author} authorHref={article.authorHref} />
             </p>
           </li>
         ))}
       </ul>
       <div className="flex justify-center py-4 px-4">
-        <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-8 py-2.5 rounded-full border border-gray-400 text-gray-800 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-200 w-full">
+        <button className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest px-8 py-2.5 rounded-full border border-gray-400 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-900 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900 hover:border-gray-900 dark:hover:border-gray-100 transition-all duration-200 w-full">
           See More
         </button>
       </div>
@@ -252,14 +257,14 @@ export default function HomepageTemplate1({ data }) {
   const { hero, secondary, latest, topStories, categorySections, feed, newsletter, originals } = data;
 
   return (
-    <main className="min-h-[100vh] bg-gray-50">
+    <main className="min-h-[100vh] bg-gray-50 dark:bg-[#0a0a0f]">
       {/* Hero + Latest Stories Rail */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-9">
             <HeroSection hero={hero} secondary={secondary} />
           </div>
-          <div className="lg:col-span-3 lg:border-l border-gray-200 lg:pl-8">
+          <div className="lg:col-span-3 lg:border-l border-gray-200 dark:border-gray-800 lg:pl-8">
             <LatestStoriesRail latest={latest} />
           </div>
         </div>
@@ -272,7 +277,7 @@ export default function HomepageTemplate1({ data }) {
 
       {/* Category Sections */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8">
-        <div className="w-full divide-y divide-gray-200">
+        <div className="w-full divide-y divide-gray-200 dark:divide-gray-800">
           {categorySections.map((section) => (
             <CategorySectionBlock key={section.id} title={section.title} articles={section.articles} />
           ))}

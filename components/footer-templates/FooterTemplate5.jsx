@@ -9,9 +9,9 @@ import NewsletterStatus from '@/components/shared/NewsletterStatus';
 // Small icon label for section headers
 function ColHeader({ icon, label }) {
   return (
-    <div className="flex items-center gap-2 pb-2 mb-3 border-b border-gray-200">
-      <span className="text-gray-400 text-base">{icon}</span>
-      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</span>
+    <div className="flex items-center gap-2 pb-2 mb-3 border-b border-gray-200 dark:border-gray-800">
+      <span className="text-gray-400 dark:text-gray-500 text-base">{icon}</span>
+      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{label}</span>
     </div>
   );
 }
@@ -20,14 +20,14 @@ export default function FooterTemplate5({ config }) {
   const c = config || DEFAULT_FOOTER_CONFIG;
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("footer");
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-white dark:bg-[#0f0f14] border-t border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-6">
 
           {/* Col 1: Logo + subtext + social */}
           <div className="flex flex-col gap-3">
-            <img src={c.logo} alt="Futurism" className="h-10 w-auto" />
-            <p className="text-xs text-gray-500 leading-relaxed">{c.newsletter?.subtext}</p>
+            <img src={c.logo} alt="Futurism" className="h-10 w-auto dark:invert" />
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{c.newsletter?.subtext}</p>
             <FooterSocialIcons links={c.socialLinks} size="sm" />
           </div>
 
@@ -35,7 +35,7 @@ export default function FooterTemplate5({ config }) {
           <div>
             <ColHeader icon="📋" label="Navigate" />
             {(c.centerLinks || []).map((l, i) => (
-              <a key={i} href={l.href || '#'} className="block text-sm font-semibold uppercase mb-2 hover:underline">{l.name}</a>
+              <a key={i} href={l.href || '#'} className="block text-sm font-semibold uppercase mb-2 hover:underline text-gray-900 dark:text-gray-100">{l.name}</a>
             ))}
           </div>
 
@@ -43,7 +43,7 @@ export default function FooterTemplate5({ config }) {
           <div>
             <ColHeader icon="🛡️" label="Policies" />
             {(c.legalLinks || []).map((l, i) => (
-              <a key={i} href={l.href || '#'} className="block text-xs uppercase text-gray-500 mb-2 hover:underline">{l.name}</a>
+              <a key={i} href={l.href || '#'} className="block text-xs uppercase text-gray-500 dark:text-gray-400 mb-2 hover:underline">{l.name}</a>
             ))}
           </div>
 
@@ -52,26 +52,26 @@ export default function FooterTemplate5({ config }) {
             <ColHeader icon="📁" label="Topics" />
             <div className="grid grid-cols-2 gap-x-3 gap-y-2">
               {(c.categoryLinks || []).map((l, i) => (
-                <a key={i} href={l.href || '#'} className="text-xs font-semibold uppercase hover:underline">{l.name}</a>
+                <a key={i} href={l.href || '#'} className="text-xs font-semibold uppercase hover:underline text-gray-900 dark:text-gray-100">{l.name}</a>
               ))}
             </div>
           </div>
 
           {/* Col 5: Newsletter + disclaimer */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="text-sm font-black uppercase leading-tight mb-1">{(c.newsletter?.heading || '').replace('\n', ' ')}</p>
+            <p className="text-sm font-black uppercase leading-tight mb-1 text-gray-900 dark:text-gray-100">{(c.newsletter?.heading || '').replace('\n', ' ')}</p>
             <form onSubmit={submit} className="flex gap-2 mb-3">
               <input type="email" placeholder="Enter your email"
                 value={email} onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 min-w-0 h-9 px-3 border border-gray-300 text-xs focus:outline-none bg-white" />
+                className="flex-1 min-w-0 h-9 px-3 border border-gray-300 dark:border-gray-700 text-xs focus:outline-none bg-white dark:bg-[#1c1c24] dark:text-gray-100" />
               <button type="submit" disabled={status === "loading"}
-                className="h-9 px-3 bg-[#111] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-black transition whitespace-nowrap disabled:opacity-60">
+                className="h-9 px-3 bg-[#111] dark:bg-gray-200 text-white dark:text-gray-900 font-bold text-[10px] uppercase tracking-widest hover:bg-black dark:hover:bg-white transition whitespace-nowrap disabled:opacity-60">
                 {status === "loading" ? "..." : (c.newsletter?.buttonLabel || 'SIGN UP')}
               </button>
             </form>
             <NewsletterStatus status={status} message={message} />
-            <p className="text-[10px] text-gray-400 leading-relaxed">{c.disclaimer}</p>
-            <p className="text-[10px] text-gray-400 mt-2">{c.copyright}</p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 leading-relaxed">{c.disclaimer}</p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2">{c.copyright}</p>
           </div>
         </div>
       </div>

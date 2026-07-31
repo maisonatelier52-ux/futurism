@@ -11,7 +11,7 @@
 // frequently nested inside a larger <a> (the article card itself) --
 // nested <a> tags aren't valid HTML, so most callers place this OUTSIDE
 // the outer card link (see each template for the exact structure).
-export function AuthorByline({ author, authorHref, className = "text-gray-500", nameClassName = "font-semibold text-gray-700" }) {
+export function AuthorByline({ author, authorHref, className = "text-gray-500 dark:text-gray-400", nameClassName = "font-semibold text-gray-700 dark:text-gray-300" }) {
   if (!author) return null;
   return (
     <span className={className}>
@@ -57,7 +57,7 @@ export function ShareIcons({ title, url, variant = "dark" }) {
   const cls =
     variant === "dark"
       ? "w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-[11px] hover:bg-red-600 transition-colors"
-      : "w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-[10px] text-gray-600 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-colors";
+      : "w-9 h-9 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-[10px] text-gray-600 dark:text-gray-300 hover:bg-gray-900 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900 hover:border-gray-900 dark:hover:border-gray-100 transition-colors";
 
   return (
     <div className={variant === "dark" ? "flex items-center gap-2" : "flex flex-col items-center gap-3"}>

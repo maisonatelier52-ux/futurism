@@ -1,8 +1,14 @@
 // components/header-templates/BreakingNewsTicker.jsx
 export default function BreakingNewsTicker({ items = [], dark = false, accentColor = '#ef4444' }) {
-  const bg    = dark ? 'bg-[#111]' : 'bg-white';
-  const border = dark ? 'border-white/10' : 'border-gray-200';
-  const textClass = dark ? 'text-white/80' : 'text-gray-800';
+  // `dark` here is an existing per-instance design variant (this ticker
+  // sitting on an already-dark header background), independent of the
+  // site-wide light/dark theme toggle. When `dark` is false (the light
+  // design variant), dark: classes are added so it also responds to the
+  // theme toggle; when `dark` is true it's already dark-styled either way.
+  const bg    = dark ? 'bg-[#111]' : 'bg-white dark:bg-[#15151c]';
+  const border = dark ? 'border-white/10' : 'border-gray-200 dark:border-gray-800';
+  const textClass = dark ? 'text-white/80' : 'text-gray-800 dark:text-gray-200';
+  const dividerBorder = dark ? '' : 'divide-gray-200 dark:divide-gray-800 border-l border-gray-200 dark:border-gray-800';
 
   if (!items.length) return null;
 
@@ -18,7 +24,7 @@ export default function BreakingNewsTicker({ items = [], dark = false, accentCol
       </div>
 
       {/* Items */}
-      <div className="flex items-center flex-1 overflow-hidden divide-x divide-gray-200 border-l border-gray-200">
+      <div className={`flex items-center flex-1 overflow-hidden ${dividerBorder || 'divide-x divide-gray-200'}`}>
         {items.slice(0, 3).map((item, i) => (
           <a
             key={i}

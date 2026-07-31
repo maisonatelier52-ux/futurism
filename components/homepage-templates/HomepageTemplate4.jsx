@@ -14,21 +14,21 @@ import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function StackedStoryCard({ article, large = false }) {
   return (
-    <div className="group flex flex-col gap-3 py-6 border-b border-gray-200">
+    <div className="group flex flex-col gap-3 py-6 border-b border-gray-200 dark:border-gray-800">
       <a href={article.href || "#"} className="flex flex-col gap-3">
-        <div className={`w-full ${large ? "aspect-[16/9]" : "aspect-[16/8]"} overflow-hidden bg-gray-100`}>
+        <div className={`w-full ${large ? "aspect-[16/9]" : "aspect-[16/8]"} overflow-hidden bg-gray-100 dark:bg-[#1c1c24]`}>
           <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
         </div>
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-        <h3 className={`font-[family-name:var(--font-owners-xnarrow)] ${large ? "text-3xl" : "text-2xl"} font-black uppercase leading-tight text-gray-900 group-hover:underline`}>
+        <h3 className={`font-[family-name:var(--font-owners-xnarrow)] ${large ? "text-3xl" : "text-2xl"} font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline`}>
           {article.title}
         </h3>
         {article.excerpt && (
           <p className="font-[family-name:var(--font-bitter)] italic text-[#4a90a4] text-base">"{article.excerpt}"</p>
         )}
       </a>
-      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
-        <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700" />
+      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400">
+        <AuthorByline author={article.author} authorHref={article.authorHref} nameClassName="font-semibold text-gray-700 dark:text-gray-300" />
       </p>
     </div>
   );
@@ -36,9 +36,9 @@ function StackedStoryCard({ article, large = false }) {
 
 function SponsoredSlot() {
   return (
-    <div className="my-6 border border-dashed border-gray-300 bg-gray-50 rounded-lg p-6 text-center">
-      <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-gray-400">Sponsored</span>
-      <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-400 mt-2">Ad slot — reserved space in the feed</p>
+    <div className="my-6 border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#0a0a0f] rounded-lg p-6 text-center">
+      <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Sponsored</span>
+      <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-400 dark:text-gray-500 mt-2">Ad slot — reserved space in the feed</p>
     </div>
   );
 }
@@ -46,15 +46,15 @@ function SponsoredSlot() {
 function EditorPickBlock({ article }) {
   if (!article) return null;
   return (
-    <div className="group flex flex-col md:flex-row gap-4 my-6 bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="group flex flex-col md:flex-row gap-4 my-6 bg-white dark:bg-[#15151c] border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
       <a href={article.href || "#"} className="flex flex-col md:flex-row gap-4 flex-1">
-        <div className="md:w-2/5 aspect-[4/3] md:aspect-auto overflow-hidden bg-gray-100">
+        <div className="md:w-2/5 aspect-[4/3] md:aspect-auto overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
           <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
         </div>
         <div className="p-5 flex flex-col justify-center">
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">Editor's Pick</span>
-          <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 group-hover:underline mt-2 break-words">{article.title}</h3>
-          <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 mt-2">
+          <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline mt-2 break-words">{article.title}</h3>
+          <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400 mt-2">
             <AuthorByline author={article.author} authorHref={article.authorHref} />
           </p>
         </div>
@@ -65,19 +65,19 @@ function EditorPickBlock({ article }) {
 
 function TrendingSidebar({ latest }) {
   return (
-    <div className="border border-gray-200 bg-white p-4">
-      <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-200 pb-2 mb-3">
+    <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151c] p-4">
+      <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-800 pb-2 mb-3">
         Trending Now
       </h3>
-      <ul className="divide-y divide-gray-100">
+      <ul className="divide-y divide-gray-100 dark:divide-gray-800">
         {latest.slice(0, 5).map((story, i) => (
           <li key={story.id} className="py-2.5 flex gap-2">
             <span className="text-red-600 font-black text-sm">{String(i + 1).padStart(2, "0")}</span>
             <div>
               <a href={story.href || "#"} className="group">
-                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 group-hover:underline break-words">{story.title}</h4>
+                <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[12.5px] font-bold leading-snug text-gray-900 dark:text-gray-100 group-hover:underline break-words">{story.title}</h4>
               </a>
-              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5">
+              <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
                 <AuthorByline author={story.author} authorHref={story.authorHref} />
               </p>
             </div>
@@ -90,6 +90,8 @@ function TrendingSidebar({ latest }) {
 
 function NewsletterBox({ newsletter }) {
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("homepage-sidebar");
+  // Fixed-dark card in both site themes -- no dark: classes needed (see
+  // FeedNewsletterBox in HomepageTemplate1 for the same pattern).
   return (
     <div className="bg-[#1f2326] text-white p-5">
       <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black uppercase leading-tight tracking-wide mb-2 break-words">{newsletter.title}</h3>
@@ -111,14 +113,14 @@ function NewsletterBox({ newsletter }) {
 // curated homepage sections, not necessarily 1:1 with real category pages).
 function CategoryShortcuts({ categorySections }) {
   return (
-    <div className="border border-gray-200 bg-white p-4">
-      <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-200 pb-2 mb-3">
+    <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151c] p-4">
+      <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-800 pb-2 mb-3">
         Category Shortcuts
       </h3>
       <ul className="flex flex-col gap-2">
         {categorySections.map((section) => (
           <li key={section.id}>
-            <a href={`#section-${section.id}`} className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700 hover:text-red-600 transition-colors">
+            <a href={`#section-${section.id}`} className="font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest text-gray-700 dark:text-gray-300 hover:text-red-600 transition-colors">
               {section.title}
             </a>
           </li>
@@ -133,20 +135,20 @@ function CategoryExpansionGrid({ categorySections }) {
     <section className="w-full space-y-8">
       {categorySections.map((section) => (
         <div key={section.id} id={`section-${section.id}`} className="scroll-mt-24">
-          <div className="flex items-center gap-3 mb-4 border-b border-gray-300 pb-2">
+          <div className="flex items-center gap-3 mb-4 border-b border-gray-300 dark:border-gray-700 pb-2">
             <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase tracking-wide text-red-600 break-words">{section.title}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {section.articles.map((article) => (
               <div key={article.id} className="group flex flex-col gap-2">
                 <a href={article.href || "#"} className="flex flex-col gap-2">
-                  <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                  <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
                   </div>
                   <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">{article.category}</span>
-                  <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">{article.title}</h3>
+                  <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-base font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline break-words">{article.title}</h3>
                 </a>
-                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400">
                   <AuthorByline author={article.author} authorHref={article.authorHref} />
                 </p>
               </div>
@@ -167,7 +169,7 @@ export default function HomepageTemplate4({ data }) {
   const restOfFeed = feed?.slice(1) || [];
 
   return (
-    <main className="min-h-[100vh] bg-gray-50">
+    <main className="min-h-[100vh] bg-gray-50 dark:bg-[#0a0a0f]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: editorial feed */}
@@ -181,7 +183,7 @@ export default function HomepageTemplate4({ data }) {
             ))}
 
             {/* Continue with the rest of the feed as smaller stacked cards */}
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-gray-200 dark:divide-gray-800">
               {restOfFeed.map((article) => (
                 <StackedStoryCard key={article.id} article={article} />
               ))}

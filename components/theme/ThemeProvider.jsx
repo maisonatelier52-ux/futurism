@@ -3,13 +3,14 @@
 // Lightweight light/dark theme context for the PUBLIC site only (the admin
 // panel has its own separate layout/styling and is untouched by this).
 //
-// How it avoids a flash of the wrong theme on load: layout.js includes a
-// small inline <script> (see THEME_INIT_SCRIPT below, or inline directly in
-// layout.js) that runs before paint and sets the `dark` class on <html>
-// synchronously, reading the same localStorage key this provider uses. This
-// component then just picks up whatever class is already there on mount and
-// keeps it in sync going forward -- it does not need to (and should not)
-// re-decide the theme on mount, since that would cause a flash itself.
+// How it avoids a flash of the wrong theme on load: layout.js uses
+// next/script with strategy="beforeInteractive" (see THEME_INIT_SCRIPT
+// below) to run a small script in <head> before hydration, setting the
+// `dark` class on <html> synchronously by reading the same localStorage
+// key this provider uses. This component then just picks up whatever
+// class is already there on mount and keeps it in sync going forward --
+// it does not need to (and should not) re-decide the theme on mount, since
+// that would cause a flash itself.
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 const STORAGE_KEY = "futurism-theme"; // "light" | "dark"

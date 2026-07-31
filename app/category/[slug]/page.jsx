@@ -8,7 +8,7 @@ import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import CategoryPageResolver from '../../../components/CategoryPageResolver';
 import { API_BASE } from '../../../lib/apiConfig';
-import { DEFAULT_CATEGORY_PAGE_CONFIG } from '../../../lib/categoryPageDefaults';
+import { withConfigDefaults } from '../../../lib/categoryPageDefaults';
 import { resolveCategoryPageContent } from '../../../lib/resolveArticleQuery';
 
 // Always render fresh -- never statically cache this page -- so a save in
@@ -21,11 +21,16 @@ async function getCategoryPageConfig(slug) {
     const res = await fetch(`${API_BASE}/api/category-page-template?slug=${encodeURIComponent(slug)}`, {
       cache: 'no-store',
     });
-    if (!res.ok) return DEFAULT_CATEGORY_PAGE_CONFIG;
+    if (!res.ok) return withConfigDefaults(null);
     const d = await res.json();
-    return d.config || DEFAULT_CATEGORY_PAGE_CONFIG;
+    // withConfigDefaults fills in any section the backend didn't send
+    // (including a category that's never been configured at all, or one
+    // saved before a newer section like `deepDive` existed) -- a shallow
+    // `d.config || DEFAULT` only caught a fully-missing config, not a
+    // partial one, which crashed on the first missing field.
+    return withConfigDefaults(d.config);
   } catch {
-    return DEFAULT_CATEGORY_PAGE_CONFIG;
+    return withConfigDefaults(null);
   }
 }
 
@@ -51,8 +56,8 @@ export default async function CategoryPage({ params, searchParams }) {
     getCategory(slug),
   ]);
 
-  const safeContent = config.content || DEFAULT_CATEGORY_PAGE_CONFIG.content;
-  const resolvedContent = await resolveCategoryPageContent(safeContent, category, API_BASE, page);
+  // config.content is already fully shaped by getCategoryPageConfig above.
+  const resolvedContent = await resolveCategoryPageContent(config.content, category, API_BASE, page);
 
   return (
     <>

@@ -33,39 +33,75 @@ body {
 
 /* ──────────────────────────────────────────────────────────────────────
    Public-site dark mode (scoped via the .dark class on <html>, set by the
-   theme toggle). Most public components style themselves with inline
-   `style={{ backgroundColor: c.bgColor }}` from saved header/footer/theme
-   config rather than Tailwind classes, so those keep whatever color the
-   admin configured them with -- that's a separate, larger project (making
-   every configurable color dark-mode-aware) and out of scope here. This
-   covers the page chrome around them: page background, default text,
-   borders, and cards/sections that DO use Tailwind's default gray/white
-   palette, which is most of the homepage/article/author/category body
-   content.
+   theme toggle).
 
-   Scoped under html.dark body:not(.admin-root) as a defensive measure --
-   the .dark class is only ever set by the PUBLIC ThemeProvider (app/layout.js),
-   never by the separate /admin layout, so this never affects the admin
-   panel today; the :not(.admin-root) guard is extra insurance in case the
-   two layouts are ever merged later. AdminShell can add "admin-root" to its
-   wrapper if that merge ever happens -- not needed today since the layouts
-   are fully separate.
+   Per-component dark: coverage: every header/footer/homepage/category/
+   article/author template has its own explicit dark: Tailwind classes
+   added directly on each element (reviewed file-by-file, including
+   correctly leaving fixed-dark sections like hero banners and newsletter
+   CTA boxes untouched since they're already dark in both themes). There
+   is deliberately no blanket "convert every bg-white anywhere" CSS rule
+   here -- a global override can't tell a page-background bg-white from
+   one that's meant to stay white inside an always-dark card, which is
+   exactly the kind of bug that broke the footer's readability originally
+   (see git history / prior session notes). Fix it at the component level,
+   not with global class overrides.
    ────────────────────────────────────────────────────────────────────── */
 html.dark body {
   background-color: #0a0a0f;
   color: #e8e8ec;
 }
-html.dark body:not(.admin-root) .bg-white  { background-color: #15151c; }
-html.dark body:not(.admin-root) .bg-gray-50 { background-color: #0a0a0f; }
-html.dark body:not(.admin-root) .bg-gray-100 { background-color: #1c1c24; }
-html.dark body:not(.admin-root) .text-zinc-900,
-html.dark body:not(.admin-root) .text-gray-900 { color: #e8e8ec; }
-html.dark body:not(.admin-root) .text-gray-700,
-html.dark body:not(.admin-root) .text-gray-600 { color: #b8b8c2; }
-html.dark body:not(.admin-root) .text-gray-500,
-html.dark body:not(.admin-root) .text-gray-400 { color: #8a8a96; }
-html.dark body:not(.admin-root) .border-gray-200,
-html.dark body:not(.admin-root) .border-gray-100 { border-color: #2a2a34; }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Admin-configurable header/footer colors (dark mode)
+
+   Header/Footer templates store bgColor/textColor/accentColor as hex
+   strings set in the admin builders and applied inline -- Tailwind's
+   dark: variant can't touch inline styles, and adjusting them via React
+   state (e.g. useTheme()) would cause a hydration mismatch on every
+   themed element, since the server always renders assuming light mode
+   (see components/theme/ThemeToggle.jsx for why that mismatch happens
+   and how it's avoided there for the toggle icon itself).
+
+   The fix: templates set the admin color as a CSS custom property
+   (e.g. style={{ '--hdr-bg': c.bgColor }}) instead of a raw
+   backgroundColor/color style, then these classes consume that variable.
+   In light mode the variable is used as-is (zero visual change from
+   before). In dark mode, color-mix() blends it toward near-black/off-white
+   entirely in CSS -- no JS, no React state, no hydration risk, and it
+   still keeps a hint of whatever hue the admin picked rather than
+   flattening every header to the same gray.
+   ────────────────────────────────────────────────────────────────────── */
+.header-surface, .footer-surface {
+  background-color: var(--hdr-bg, var(--ftr-bg, #ffffff));
+}
+.header-fg, .footer-fg {
+  color: var(--hdr-fg, var(--ftr-fg, #111111));
+}
+html.dark .header-surface {
+  background-color: color-mix(in srgb, var(--hdr-bg, #f8f8f8) 12%, #0a0a0f);
+}
+html.dark .header-fg {
+  color: color-mix(in srgb, var(--hdr-fg, #111111) 12%, #e8e8ec);
+}
+html.dark .footer-surface {
+  background-color: color-mix(in srgb, var(--ftr-bg, #f8f8f8) 12%, #0a0a0f);
+}
+html.dark .footer-fg {
+  color: color-mix(in srgb, var(--ftr-fg, #111111) 12%, #e8e8ec);
+}
+/* Some sections (e.g. the footer newsletter box) are ALREADY a deliberately
+   dark admin color in light mode -- color-mixing them further toward
+   black would just make them murkier, not more readable. These variants
+   mix toward a lighter, desaturated version instead, for surfaces that
+   are dark by design in both themes. */
+.header-surface-inverted, .footer-surface-inverted {
+  background-color: var(--hdr-bg, var(--ftr-bg, #1f2326));
+}
+html.dark .header-surface-inverted,
+html.dark .footer-surface-inverted {
+  background-color: color-mix(in srgb, var(--hdr-bg, var(--ftr-bg, #1f2326)) 55%, #0a0a0f);
+}
 
 /* ──────────────────────────────────────────────────────────────────────
    Admin-only utility classes (scoped — none of these touch body/font-family

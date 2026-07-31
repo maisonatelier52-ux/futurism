@@ -9,6 +9,8 @@ import {
   DEFAULT_CATEGORY_PAGE_CONFIG,
   CATEGORY_TEMPLATE_OPTIONS,
   defaultQuery,
+  withContentDefaults,
+  withConfigDefaults,
 } from "@/lib/categoryPageDefaults";
 import { resolveCategoryPageContent } from "@/lib/resolveArticleQuery";
 
@@ -346,9 +348,9 @@ export default function CategoryPageBuilder() {
       .then(async (r) => {
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || `Error ${r.status}`);
-        setConfig(d.config || { ...DEFAULT_CATEGORY_PAGE_CONFIG });
+        setConfig(withConfigDefaults(d.config));
       })
-      .catch(() => setConfig({ ...DEFAULT_CATEGORY_PAGE_CONFIG }))
+      .catch(() => setConfig(withConfigDefaults(null)))
       .finally(() => setLoadingConfig(false));
   }, [selectedSlug]);
 
@@ -390,7 +392,7 @@ export default function CategoryPageBuilder() {
       });
       const d = await res.json();
       if (!res.ok) throw new Error(d.error);
-      setConfig(d.config);
+      setConfig(withConfigDefaults(d.config));
       showToast(`Category page saved — live on /category/${selectedSlug}`, { type: "success" });
     } catch {
       showToast("Couldn't save category page", { type: "error" });
@@ -411,7 +413,10 @@ export default function CategoryPageBuilder() {
 
   const activeKey = config?.activeTemplate || "template-4";
   const PreviewTemplate = TEMPLATES[activeKey] || CategoryTemplate4;
-  const content = config?.content || DEFAULT_CATEGORY_PAGE_CONFIG.content;
+  // Defense in depth: withConfigDefaults() is already applied everywhere
+  // config gets set (initial load, load failure, and after save), but this
+  // keeps render-time reads safe even if that invariant is ever broken.
+  const content = withContentDefaults(config?.content);
 
   return (
     <div className="flex flex-col h-full min-h-0">

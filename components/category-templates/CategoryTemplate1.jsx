@@ -11,21 +11,21 @@ import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 function RailItem({ article }) {
   return (
-    <div className="group flex gap-3 py-3 border-b border-gray-200 last:border-b-0">
+    <div className="group flex gap-3 py-3 border-b border-gray-200 dark:border-gray-800 last:border-b-0">
       <a href={article.href || "#"} className="flex gap-3 flex-1">
-        <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-200 rounded">
+        <div className="w-16 h-16 shrink-0 overflow-hidden bg-gray-200 dark:bg-[#242430] rounded">
           <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
         </div>
         <div className="min-w-0">
           <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-red-600">
             {article.category}
           </span>
-          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[13px] font-bold leading-snug text-gray-900 group-hover:underline break-words">
+          <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-[13px] font-bold leading-snug text-gray-900 dark:text-gray-100 group-hover:underline break-words">
             {article.title}
           </h4>
         </div>
       </a>
-      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 mt-0.5 pl-[76px] -mt-1">
+      <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 pl-[76px] -mt-1">
         <AuthorByline author={article.author} authorHref={article.authorHref} />
       </p>
     </div>
@@ -36,7 +36,7 @@ function TrendingCard({ article, index }) {
   return (
     <div className="group flex flex-col gap-2 min-w-[210px]">
       <a href={article.href || "#"} className="flex flex-col gap-2">
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-200">
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-[#242430]">
           <span className="absolute top-2 left-2 z-10 bg-indigo-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
             {String(index + 1).padStart(2, "0")}
           </span>
@@ -45,11 +45,11 @@ function TrendingCard({ article, index }) {
         <span className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600">
           {article.category}
         </span>
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline break-words">
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 dark:text-gray-100 group-hover:underline break-words">
           {article.title}
         </h3>
       </a>
-      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500">
+      <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400">
         <AuthorByline author={article.author} authorHref={article.authorHref} />
       </p>
     </div>
@@ -61,19 +61,19 @@ export default function CategoryTemplate1({ data }) {
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("category-page");
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white dark:bg-[#15151c]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6">
         <p className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-indigo-600 mb-1">Category</p>
-        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 break-words">
+        <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-4xl md:text-5xl font-black uppercase leading-none text-gray-900 dark:text-gray-100 break-words">
           {hero.title}
         </h1>
         <div className="h-1 w-16 bg-indigo-600 mt-4" />
       </div>
 
       {/* Subcategory tabs (plain labels -- no per-tab page yet) */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-6 flex flex-wrap items-center gap-x-8 gap-y-2 border border-gray-200 rounded-lg py-4">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-6 flex flex-wrap items-center gap-x-8 gap-y-2 border border-gray-200 dark:border-gray-800 rounded-lg py-4">
         {tabs.subcategories.map((sub, i) => (
-          <span key={sub} className={`font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest ${i === 0 ? "text-indigo-600" : "text-gray-700"}`}>
+          <span key={sub} className={`font-[family-name:var(--font-scale)] text-xs font-semibold uppercase tracking-widest ${i === 0 ? "text-indigo-600" : "text-gray-700 dark:text-gray-300"}`}>
             {sub}
           </span>
         ))}
@@ -85,7 +85,7 @@ export default function CategoryTemplate1({ data }) {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
-        <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-600 leading-relaxed max-w-3xl mb-8">
+        <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mb-8">
           {hero.description}
         </p>
 
@@ -115,7 +115,7 @@ export default function CategoryTemplate1({ data }) {
           </div>
 
           {/* Right rail */}
-          <div className="lg:col-span-4 border border-gray-200 rounded-lg p-5">
+          <div className="lg:col-span-4 border border-gray-200 dark:border-gray-800 rounded-lg p-5">
             <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-indigo-600 border-b border-indigo-200 pb-2 mb-1 break-words">
               Latest in {hero.title}
             </h3>
@@ -126,32 +126,32 @@ export default function CategoryTemplate1({ data }) {
 
       {/* Trending strip */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8">
-        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-gray-900 mb-4 break-words">Trending Now</h3>
+        <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-widest text-gray-900 dark:text-gray-100 mb-4 break-words">Trending Now</h3>
         <div className="flex gap-6 overflow-x-auto pb-2">
           {latest.map((a, i) => <TrendingCard key={a.id} article={a} index={i} />)}
         </div>
       </div>
 
       {/* Deep dive */}
-      <div className="bg-gray-50 py-10">
+      <div className="bg-gray-50 dark:bg-[#0a0a0f] py-10">
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-3">
             <p className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-indigo-600 mb-2">| {deepDive.title}</p>
-            <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-600 leading-relaxed">{deepDive.description}</p>
+            <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{deepDive.description}</p>
           </div>
           <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-3 gap-6">
             {deepDive.items.map((item) => (
-              <div key={item.id} className="group flex flex-col gap-2 bg-white rounded-lg overflow-hidden border border-gray-200">
+              <div key={item.id} className="group flex flex-col gap-2 bg-white dark:bg-[#15151c] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
                 <a href={item.href || "#"} className="flex flex-col gap-2 flex-1">
-                  <div className="w-full aspect-[16/10] overflow-hidden bg-gray-200">
+                  <div className="w-full aspect-[16/10] overflow-hidden bg-gray-200 dark:bg-[#242430]">
                     <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform" />
                   </div>
                   <div className="p-4 pb-0">
                     <span className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-indigo-600">{item.category}</span>
-                    <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 group-hover:underline mt-1 break-words">{item.title}</h4>
+                    <h4 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black leading-tight text-gray-900 dark:text-gray-100 group-hover:underline mt-1 break-words">{item.title}</h4>
                   </div>
                 </a>
-                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 px-4 pb-4">
+                <p className="font-[family-name:var(--font-owners-text)] text-xs text-gray-500 dark:text-gray-400 px-4 pb-4">
                   <AuthorByline author={item.author} authorHref={item.authorHref} />
                 </p>
               </div>
@@ -162,15 +162,15 @@ export default function CategoryTemplate1({ data }) {
 
       {/* Newsletter */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-        <div className="bg-gray-50 rounded-lg flex flex-col md:flex-row items-center gap-6 px-8 py-8">
+        <div className="bg-gray-50 dark:bg-[#0a0a0f] rounded-lg flex flex-col md:flex-row items-center gap-6 px-8 py-8">
           <div className="w-14 h-14 shrink-0 rounded-full bg-indigo-900 flex items-center justify-center text-white">✉</div>
           <div className="flex-1">
-            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black text-gray-900 break-words">{newsletter.title}</h3>
-            <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500 mt-1">{newsletter.description}</p>
+            <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-lg font-black text-gray-900 dark:text-gray-100 break-words">{newsletter.title}</h3>
+            <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500 dark:text-gray-400 mt-1">{newsletter.description}</p>
           </div>
           <form onSubmit={submit} className="flex gap-2 w-full md:w-auto">
             <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 md:w-64 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none" />
+              className="flex-1 md:w-64 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none" />
             <button type="submit" disabled={status === "loading"}
               className="bg-indigo-900 hover:bg-indigo-800 text-white font-[family-name:var(--font-scale)] font-bold uppercase tracking-widest text-xs px-6 py-2.5 rounded-lg disabled:opacity-60 whitespace-nowrap">
               {status === "loading" ? "..." : newsletter.buttonLabel}

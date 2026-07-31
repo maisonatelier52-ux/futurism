@@ -7,8 +7,8 @@ import NewsletterStatus from "@/components/shared/NewsletterStatus";
 // Inline variant: email input + button side by side
 export function NewsletterInline({ newsletter = {}, dark = false }) {
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("footer");
-  const bg = dark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40' : 'bg-white border-gray-300 text-black';
-  const btn = dark ? 'bg-white text-black hover:bg-gray-200' : 'bg-[#1f2326] text-white hover:bg-black';
+  const bg = dark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40' : 'bg-white dark:bg-[#1c1c24] border-gray-300 dark:border-gray-700 text-black dark:text-gray-100';
+  const btn = dark ? 'bg-white text-black hover:bg-gray-200' : 'bg-[#1f2326] dark:bg-gray-200 text-white dark:text-gray-900 hover:bg-black dark:hover:bg-white';
   return (
     <form onSubmit={submit} className="w-full">
       <div className="flex gap-2 w-full">

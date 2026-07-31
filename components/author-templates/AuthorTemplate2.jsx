@@ -13,7 +13,7 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
   const latest = (author.latestWorks?.length ? author.latestWorks : author.notableWorks || []).slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white dark:bg-[#15151c]">
       {/* Full black hero */}
       <div className="bg-gray-950 text-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 sm:py-14">
@@ -69,29 +69,29 @@ export default function AuthorTemplate2({ author, articles, pagination }) {
       </div>
 
       {/* Quote / About / Background / Beyond Writing row */}
-      <div className="bg-gray-50 py-8 sm:py-10">
+      <div className="bg-gray-50 dark:bg-[#0a0a0f] py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="bg-white rounded-lg p-5">
+            <div className="bg-white dark:bg-[#15151c] rounded-lg p-5">
               <span className="text-red-600 text-2xl font-serif leading-none">&ldquo;</span>
-              <p className="font-[family-name:var(--font-bitter)] italic text-sm text-gray-800 leading-snug mt-1 mb-3">{quote}</p>
+              <p className="font-[family-name:var(--font-bitter)] italic text-sm text-gray-800 dark:text-gray-200 leading-snug mt-1 mb-3">{quote}</p>
               <div className="h-0.5 w-8 bg-red-600 mb-2" />
-              <p className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-gray-500">{author.name}</p>
+              <p className="font-[family-name:var(--font-scale)] text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">{author.name}</p>
             </div>
-            <div className="bg-white rounded-lg p-5">
+            <div className="bg-white dark:bg-[#15151c] rounded-lg p-5">
               <span className="text-xl mb-2 block">✏️</span>
-              <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 mb-2">About</h3>
-              <p className="font-[family-name:var(--font-owners-text)] text-[13px] text-gray-600 leading-relaxed">{author.about?.[0] || ""}</p>
+              <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100 mb-2">About</h3>
+              <p className="font-[family-name:var(--font-owners-text)] text-[13px] text-gray-600 dark:text-gray-300 leading-relaxed">{author.about?.[0] || ""}</p>
             </div>
-            <div className="bg-white rounded-lg p-5">
+            <div className="bg-white dark:bg-[#15151c] rounded-lg p-5">
               <span className="text-xl mb-2 block">🌍</span>
-              <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 mb-2">Background</h3>
-              <p className="font-[family-name:var(--font-owners-text)] text-[13px] text-gray-600 leading-relaxed">{extras.background}</p>
+              <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100 mb-2">Background</h3>
+              <p className="font-[family-name:var(--font-owners-text)] text-[13px] text-gray-600 dark:text-gray-300 leading-relaxed">{extras.background}</p>
             </div>
-            <div className="bg-white rounded-lg p-5">
+            <div className="bg-white dark:bg-[#15151c] rounded-lg p-5">
               <span className="text-xl mb-2 block">☕</span>
-              <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 mb-2">Beyond Writing</h3>
-              <p className="font-[family-name:var(--font-owners-text)] text-[13px] text-gray-600 leading-relaxed">{extras.beyondWriting}</p>
+              <h3 className="font-[family-name:var(--font-scale)] text-[11px] font-bold uppercase tracking-widest text-gray-900 dark:text-gray-100 mb-2">Beyond Writing</h3>
+              <p className="font-[family-name:var(--font-owners-text)] text-[13px] text-gray-600 dark:text-gray-300 leading-relaxed">{extras.beyondWriting}</p>
             </div>
           </div>
         </div>

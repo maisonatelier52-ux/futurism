@@ -11,7 +11,7 @@ import { CategoryTag } from "../shared/ArticleLinks";
 export function AuthorArticleCard({ article }) {
   return (
     <a href={article.href || "#"} className="group flex flex-col gap-2">
-      <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200">
+      <div className="w-full aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-[#242430]">
         <img
           src={article.image}
           alt={article.title}
@@ -23,7 +23,7 @@ export function AuthorArticleCard({ article }) {
         categoryHref={article.categoryHref}
         className="font-[family-name:var(--font-scale)] text-[10px] font-semibold uppercase tracking-widest text-red-600 mt-1"
       />
-      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm sm:text-base font-black uppercase leading-tight text-gray-900 group-hover:underline break-words">
+      <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm sm:text-base font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline break-words">
         {article.title}
       </h3>
     </a>
@@ -34,7 +34,7 @@ export function AuthorPagination({ current, total, dark = false }) {
   const activeCls = "bg-red-600 text-white";
   const idleCls = dark
     ? "text-gray-300 hover:bg-white/10"
-    : "text-gray-700 hover:bg-gray-100";
+    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1c1c24]";
   return (
     <div className="flex items-center justify-center gap-1 py-8 sm:py-10 flex-wrap">
       <button className={`w-9 h-9 flex items-center justify-center rounded-sm font-[family-name:var(--font-scale)] text-sm font-bold ${activeCls}`}>
@@ -45,7 +45,7 @@ export function AuthorPagination({ current, total, dark = false }) {
           {p}
         </button>
       ))}
-      <span className={`w-9 h-9 flex items-center justify-center font-[family-name:var(--font-scale)] text-sm ${dark ? "text-gray-500" : "text-gray-400"}`}>...</span>
+      <span className={`w-9 h-9 flex items-center justify-center font-[family-name:var(--font-scale)] text-sm ${dark ? "text-gray-500" : "text-gray-400 dark:text-gray-500"}`}>...</span>
       <button className={`w-9 h-9 flex items-center justify-center rounded-sm font-[family-name:var(--font-scale)] text-sm ${idleCls}`}>
         {total}
       </button>

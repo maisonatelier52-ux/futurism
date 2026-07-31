@@ -5,9 +5,9 @@ import { DEFAULT_FOOTER_CONFIG } from '@/lib/footerDefaults';
 
 function ColHeader({ icon, label }) {
   return (
-    <div className="flex items-center gap-2 pb-2 mb-3 border-b border-gray-200">
-      <span className="text-gray-400 text-base">{icon}</span>
-      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</span>
+    <div className="flex items-center gap-2 pb-2 mb-3 border-b border-gray-200 dark:border-gray-800">
+      <span className="text-gray-400 dark:text-gray-500 text-base">{icon}</span>
+      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{label}</span>
     </div>
   );
 }
@@ -15,7 +15,7 @@ function ColHeader({ icon, label }) {
 export default function FooterTemplate6({ config }) {
   const c = config || DEFAULT_FOOTER_CONFIG;
   return (
-    <footer className="border-t border-gray-200">
+    <footer className="border-t border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12">
 
@@ -27,19 +27,19 @@ export default function FooterTemplate6({ config }) {
           </div>
 
           {/* Right 3 cols */}
-          <div className="lg:col-span-9 bg-white px-6 md:px-10 py-8">
+          <div className="lg:col-span-9 bg-white dark:bg-[#0f0f14] px-6 md:px-10 py-8">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
               {/* Col 1: Nav + legal with icon headers */}
               <div>
                 <ColHeader icon="ℹ️" label="About" />
                 {(c.centerLinks || []).map((l, i) => (
-                  <a key={i} href={l.href || '#'} className="block text-sm font-semibold uppercase mb-2 hover:underline">{l.name}</a>
+                  <a key={i} href={l.href || '#'} className="block text-sm font-semibold uppercase mb-2 hover:underline text-gray-900 dark:text-gray-100">{l.name}</a>
                 ))}
                 <div className="mt-4">
                   <ColHeader icon="🛡️" label="Policies" />
                   {(c.legalLinks || []).map((l, i) => (
-                    <a key={i} href={l.href || '#'} className="block text-xs text-gray-500 uppercase mb-1.5 hover:underline">{l.name}</a>
+                    <a key={i} href={l.href || '#'} className="block text-xs text-gray-500 dark:text-gray-400 uppercase mb-1.5 hover:underline">{l.name}</a>
                   ))}
                 </div>
               </div>
@@ -49,7 +49,7 @@ export default function FooterTemplate6({ config }) {
                 <ColHeader icon="📁" label="Explore" />
                 <div className="grid grid-cols-2 gap-x-3 gap-y-2">
                   {(c.categoryLinks || []).map((l, i) => (
-                    <a key={i} href={l.href || '#'} className="text-xs font-semibold uppercase hover:underline">{l.name}</a>
+                    <a key={i} href={l.href || '#'} className="text-xs font-semibold uppercase hover:underline text-gray-900 dark:text-gray-100">{l.name}</a>
                   ))}
                 </div>
               </div>
@@ -57,17 +57,17 @@ export default function FooterTemplate6({ config }) {
               {/* Col 3: Social + disclaimer */}
               <div className="flex flex-col gap-4">
                 <div>
-                  <div className="pb-2 mb-3 border-b border-gray-200" />
+                  <div className="pb-2 mb-3 border-b border-gray-200 dark:border-gray-800" />
                   <FooterSocialIcons links={c.socialLinks} />
                 </div>
-                <p className="text-[10px] text-gray-400 leading-relaxed">{c.disclaimer}</p>
+                <p className="text-[10px] text-gray-400 dark:text-gray-500 leading-relaxed">{c.disclaimer}</p>
               </div>
 
             </div>
 
             {/* Copyright */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
-              <p className="text-[10px] text-gray-400">{c.copyright}</p>
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
+              <p className="text-[10px] text-gray-400 dark:text-gray-500">{c.copyright}</p>
             </div>
           </div>
         </div>
