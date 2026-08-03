@@ -2,33 +2,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  LayoutDashboard, Newspaper, FolderTree, LayoutTemplate,
-  PanelTop, PanelBottom, ImageIcon, Users2, Settings as SettingsIcon,
-  UserCircle, X, LogOut, History,
-} from "lucide-react";
+import { X, LogOut } from "lucide-react";
 import { useState } from "react";
 import { apiFetch } from "@/lib/apiConfig";
+import { PERMISSION_ITEMS, canAccess } from "@/lib/permissions";
 
-const NAV_ITEMS = [
-  { href: "/admin/dashboard",        label: "Dashboard",        icon: LayoutDashboard },
-  { href: "/admin/articles",         label: "Articles",         icon: Newspaper },
-  { href: "/admin/categories",       label: "Categories",       icon: FolderTree },
-  { href: "/admin/category-page-builder", label: "Category Page Builder", icon: LayoutTemplate },
-  { href: "/admin/authors",          label: "Authors",          icon: UserCircle },
-  { href: "/admin/homepage-builder", label: "Homepage Builder", icon: LayoutTemplate },
-  { href: "/admin/header-builder",   label: "Header Builder",   icon: PanelTop },
-  { href: "/admin/footer-builder",   label: "Footer Builder",   icon: PanelBottom },
-  { href: "/admin/media-library",    label: "Media Library",    icon: ImageIcon },
-  { href: "/admin/activity-log",     label: "Activity Log",     icon: History },
-  { href: "/admin/users",            label: "Users",            icon: Users2 },
-  { href: "/admin/settings",         label: "Settings",         icon: SettingsIcon },
-];
-
-export default function Sidebar({ open, onClose }) {
+export default function Sidebar({ open, onClose, session }) {
   const pathname = usePathname();
   const router   = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+
+  // Admin's session.permissions is null (sees every item); Editor/Stylist
+  // sessions carry the specific list an admin assigned them on the Users
+  // page. Filtering here means an Editor never even sees a link to, say,
+  // Header Builder -- not just blocked from following it.
+  const navItems = PERMISSION_ITEMS.filter((item) => canAccess(session?.permissions, item.key));
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -66,7 +54,7 @@ export default function Sidebar({ open, onClose }) {
   />
 </div>
             <span className="block text-[10px] -mt-3 text-red-400 uppercase tracking-widest">
-              Admin Panel
+              {session?.role === "admin" ? "Admin Panel" : session?.role === "editor" ? "Editor" : session?.role === "stylist" ? "Stylist" : "Admin Panel"}
             </span>
           </div>
           <button
@@ -79,7 +67,7 @@ export default function Sidebar({ open, onClose }) {
 
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const active =
               item.href === "/admin/dashboard"
                 ? pathname === "/admin/dashboard"

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { apiFetch } from '@/lib/apiConfig';
+import { firstAccessibleHref, PERMISSION_ITEMS, canAccess } from '@/lib/permissions';
 
 function LoginForm() {
   const router = useRouter();
@@ -24,8 +25,17 @@ function LoginForm() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Login failed'); return; }
-      const next = searchParams.get('next') || '/admin/dashboard';
-      router.push(next);
+      const requestedNext = searchParams.get('next');
+      const permissions = data.permissions ?? null;
+      // Editor/Stylist accounts don't have "dashboard" -- sending them there
+      // would just bounce them straight back out via AdminShell's guard. An
+      // explicit ?next= (set when a session expired mid-page) is honored
+      // only if this account can actually reach it; otherwise go straight
+      // to the first page their permissions do allow, rather than
+      // flashing the requested page and immediately bouncing out of it.
+      const matchedItem = PERMISSION_ITEMS.find((item) => requestedNext?.startsWith(item.href));
+      const canReachNext = requestedNext && matchedItem && canAccess(permissions, matchedItem.key);
+      router.push(canReachNext ? requestedNext : firstAccessibleHref(permissions));
     } catch {
       setError('Network error');
     } finally {

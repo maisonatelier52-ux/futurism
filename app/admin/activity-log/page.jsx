@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/Toast";
 import { apiFetch } from "@/lib/apiConfig";
 import {
   History, Newspaper, UserCircle, FolderTree, Settings as SettingsIcon,
-  ShieldCheck, Trash2, RefreshCw,
+  ShieldCheck, Trash2, RefreshCw, Mail,
 } from "lucide-react";
 
 const ENTITY_ICONS = {
@@ -17,6 +17,7 @@ const ENTITY_ICONS = {
   category: FolderTree,
   settings: SettingsIcon,
   admin: ShieldCheck,
+  subscriber: Mail,
 };
 
 const ENTITY_FILTERS = [
@@ -24,6 +25,7 @@ const ENTITY_FILTERS = [
   { value: "article", label: "Articles" },
   { value: "author", label: "Authors" },
   { value: "category", label: "Categories" },
+  { value: "subscriber", label: "Subscribers" },
   { value: "admin", label: "Account" },
   { value: "settings", label: "Settings" },
 ];

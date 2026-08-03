@@ -24,7 +24,7 @@ export default function HeaderTemplate1({ config }) {
       <div className="hidden md:block max-w-7xl mx-auto px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex-shrink-0 mt-3">
-            <img src={c.logo} alt="Futurism" className="h-16 w-auto" />
+            <img src={c.logo} alt="Futurism" className="h-16 w-auto dark:invert" />
           </div>
           <nav className="flex items-center gap-5 text-sm tracking-wider font-[family-name:var(--font-scale)]">
             {(c.mainLinks || []).map((link, i) => (
@@ -58,7 +58,7 @@ export default function HeaderTemplate1({ config }) {
           <button onClick={() => setMenuOpen(!menuOpen)} className="header-fg p-2 text-2xl leading-none">
             {menuOpen ? '✕' : '☰'}
           </button>
-          <img src={c.logo} alt="Futurism" className="h-8 w-auto" />
+          <img src={c.logo} alt="Futurism" className="h-8 w-auto dark:invert" />
           <button className="header-fg p-2 hover:opacity-70">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
           </button>

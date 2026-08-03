@@ -16,7 +16,7 @@ export default function HeaderTemplate6({ config }) {
         <div className="flex items-center h-14 md:h-16 gap-2 xs:gap-3 md:gap-6">
           {/* Logo with accent underline */}
           <div className="flex-shrink-0 relative pb-1">
-            <img src={c.logo} alt="Futurism" className="h-7 xs:h-8 md:h-10 w-auto" />
+            <img src={c.logo} alt="Futurism" className="h-7 xs:h-8 md:h-10 w-auto dark:invert" />
             <div className="absolute bottom-0 left-0 w-full h-0.5 rounded-full" style={{ backgroundColor: c.accentColor }} />
           </div>
           {/* Separator */}

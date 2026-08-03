@@ -37,7 +37,7 @@ export default function HeaderTemplate5({ config }) {
             {menuOpen ? '✕' : '☰'}
           </button>
           {/* Centered logo */}
-          <img src={c.logo} alt="Futurism" className="h-9 md:h-11 w-auto flex-shrink-0 mx-auto md:mx-0" />
+          <img src={c.logo} alt="Futurism" className="h-9 md:h-11 w-auto flex-shrink-0 mx-auto md:mx-0 dark:invert" />
           {/* Right nav — desktop only */}
           <nav className="hidden md:flex items-center gap-3 lg:gap-4 text-sm font-[family-name:var(--font-scale)] tracking-wide flex-1 justify-end overflow-hidden">
             {rightLinks.map((link, i) => (

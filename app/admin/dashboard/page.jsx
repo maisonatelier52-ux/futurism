@@ -7,7 +7,7 @@ import { apiFetch } from "@/lib/apiConfig";
 import {
   Newspaper, Eye, Users2, TrendingUp, PanelTop, PanelBottom, LayoutTemplate,
   ArrowRight, UserCircle, FolderTree, Settings as SettingsIcon,
-  ShieldCheck, History,
+  ShieldCheck, History, Mail,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,6 +30,7 @@ const ENTITY_ICONS = {
   category: FolderTree,
   settings: SettingsIcon,
   admin: ShieldCheck,
+  subscriber: Mail,
 };
 
 function timeAgo(dateStr) {

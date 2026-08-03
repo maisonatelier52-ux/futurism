@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from "react";
 import AdminShell from "@/components/layout/AdminShell";
+import Tabs from "@/components/ui/Tabs";
 import { useToast } from "@/components/ui/Toast";
 import { apiFetch } from "@/lib/apiConfig";
-import { ShieldCheck, KeyRound, User } from "lucide-react";
+import { ShieldCheck, KeyRound, User, Users2 } from "lucide-react";
+import TeamMembersPanel from "./TeamMembersPanel";
 
 export default function UsersPage() {
   const [account, setAccount] = useState(null);
+  const [role, setRole] = useState(null); // fetched once to decide whether to show the Team Members tab
+  const [tab, setTab] = useState("account");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -20,6 +24,10 @@ export default function UsersPage() {
       .then((r) => r.json())
       .then((d) => setAccount(d.account))
       .catch(() => showToast("Failed to load account", { type: "error" }));
+    apiFetch("/api/admin/auth/me")
+      .then((r) => r.json())
+      .then((d) => setRole(d.admin?.role || null))
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -69,13 +77,30 @@ export default function UsersPage() {
 
   return (
     <AdminShell title="Users">
-      <div className="p-5 lg:p-8 max-w-xl mx-auto">
+      <div className={`p-5 lg:p-8 mx-auto ${tab === "team" ? "max-w-3xl" : "max-w-xl"}`}>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-ink-900">My Account</h2>
-          <p className="text-sm text-ink-500 mt-1">Manage your admin login credentials.</p>
+          <h2 className="text-xl font-bold text-ink-900">Users</h2>
+          <p className="text-sm text-ink-500 mt-1">
+            {tab === "account" ? "Manage your login credentials." : "Manage Editor and Stylist accounts and sidebar access."}
+          </p>
         </div>
 
-        {!account ? (
+        {role === "admin" && (
+          <div className="mb-6">
+            <Tabs
+              tabs={[
+                { value: "account", label: "My Account", icon: User },
+                { value: "team", label: "Team Members", icon: Users2 },
+              ]}
+              active={tab}
+              onChange={setTab}
+            />
+          </div>
+        )}
+
+        {tab === "team" && role === "admin" ? (
+          <TeamMembersPanel />
+        ) : !account ? (
           <p className="text-sm text-ink-400">Loading account…</p>
         ) : (
           <>

@@ -25,7 +25,7 @@ export default function HeaderTemplate3({ config }) {
             {menuOpen ? '✕' : '☰'}
           </button>
           {/* Logo */}
-          <img src={c.logo} alt="Futurism" className="h-10 md:h-14 w-auto flex-shrink-0" />
+          <img src={c.logo} alt="Futurism" className="h-10 md:h-14 w-auto flex-shrink-0 dark:invert" />
           {/* Search — hidden on small mobile, shown md+ */}
           <div className="hidden sm:flex flex-1 max-w-xl relative">
             <input type="text" placeholder="Search the future..."

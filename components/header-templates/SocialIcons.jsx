@@ -19,7 +19,7 @@ export default function SocialIcons({ links = [], size = 'sm', rounded = true, d
   const sizeClass = size === 'lg' ? 'w-9 h-9 text-lg' : 'w-8 h-8 text-base';
   const borderClass = dark
     ? 'border-white/30 hover:bg-white/20 text-white'
-    : 'border-gray-300 hover:bg-gray-100 text-gray-700';
+    : 'border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300';
 
   return (
     <div className="flex items-center gap-1.5">

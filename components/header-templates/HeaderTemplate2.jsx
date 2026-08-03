@@ -20,7 +20,7 @@ export default function HeaderTemplate2({ config }) {
             {menuOpen ? '✕' : '☰'}
           </button>
           {/* Logo */}
-          <img src={c.logo} alt="Futurism" className="h-7 xs:h-8 md:h-10 w-auto flex-shrink-0" />
+          <img src={c.logo} alt="Futurism" className="h-7 xs:h-8 md:h-10 w-auto flex-shrink-0 dark:invert" />
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-4 lg:gap-5 text-sm font-[family-name:var(--font-scale)] tracking-wide flex-1 overflow-x-auto scrollbar-hide">
             {allLinks.map((link, i) => (

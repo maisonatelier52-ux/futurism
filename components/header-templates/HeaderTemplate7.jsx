@@ -27,7 +27,7 @@ export default function HeaderTemplate7({ config }) {
           <button onClick={() => setMenuOpen(!menuOpen)} className="header-fg w-8 h-8 flex items-center justify-center text-xl">
             {menuOpen ? '✕' : '☰'}
           </button>
-          <img src={c.logo} alt="Futurism" className="h-7 xs:h-8 w-auto" />
+          <img src={c.logo} alt="Futurism" className="h-7 xs:h-8 w-auto dark:invert" />
         </div>
 
         {/* Center nav — desktop */}
