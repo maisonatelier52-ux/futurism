@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Plus, Edit2, Trash2, X, Save, AlertCircle, Search,
   Upload, Trash, Eye, EyeOff, FolderTree, ChevronDown, ChevronUp,
@@ -65,7 +66,7 @@ const EMPTY_FORM = {
 
 // ─── MAIN PAGE ───────────────────────────────────────────────────────────────
 
-export default function CategoriesPage() {
+function CategoriesPageInner() {
   const [categories, setCategories] = useState([]);
   const [filtered,   setFiltered]   = useState([]);
   const [search,     setSearch]     = useState("");
@@ -99,6 +100,22 @@ export default function CategoriesPage() {
   }, []);
 
   useEffect(() => { loadCategories(); }, [loadCategories]);
+
+  // Deep-link support: /admin/categories?edit=<id> (used by the Topbar's
+  // global search results) opens that category's edit modal directly.
+  // Categories are always loaded in full (no pagination), so this just
+  // waits for that load to finish and finds the match by id -- no
+  // separate by-id fetch needed, unlike the Articles page.
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (!editId || categories.length === 0) return;
+    const match = categories.find((c) => c._id === editId);
+    if (match) openModal(match);
+    router.replace("/admin/categories");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, categories]);
 
   useEffect(() => {
     const q = search.toLowerCase();
@@ -526,6 +543,17 @@ export default function CategoriesPage() {
         </div>
       )}
     </AdminShell>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the App Router -- see
+// the same pattern in app/admin/login/page.jsx and app/admin/articles/page.jsx.
+// Needed here for the ?edit=<id> deep link from the Topbar's global search.
+export default function CategoriesPage() {
+  return (
+    <Suspense fallback={null}>
+      <CategoriesPageInner />
+    </Suspense>
   );
 }
 

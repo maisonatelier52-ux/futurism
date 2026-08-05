@@ -83,7 +83,7 @@ export default function DashboardPage() {
     {
       label: "Total Views",
       value: stats ? stats.totalViews.toLocaleString() : "—",
-      delta: stats && !stats.viewsTrackingEnabled ? "all-time · 24h tracking not yet set up" : "last 24 hours",
+      delta: stats ? "all-time, tracked live" : "from MongoDB",
       icon: Eye,
     },
     {

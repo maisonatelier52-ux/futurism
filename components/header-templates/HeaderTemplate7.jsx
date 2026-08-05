@@ -1,6 +1,7 @@
 'use client';
 // Template 7: Diagonal logo block left, split nav center, weather+social right, breaking news bar
 import { useState } from 'react';
+import Link from 'next/link';
 import SocialIcons from './SocialIcons';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 
@@ -66,9 +67,9 @@ export default function HeaderTemplate7({ config }) {
 
         {/* Mobile right: search */}
         <div className="md:hidden ml-auto flex items-center px-2 xs:px-3">
-          <button className="header-fg p-1.5">
+          <Link href="/search" className="header-fg p-1.5">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
-          </button>
+          </Link>
         </div>
       </div>
 

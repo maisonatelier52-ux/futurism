@@ -36,7 +36,7 @@ function AdPlaceholder() {
 }
 
 export default function ArticleTemplate4({ article, related }) {
-  const { mostPopular, aroundTheWeb, moreInCategory } = related;
+  const { mostPopular, aroundTheWeb, moreInCategory, relatedByTag } = related;
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("article-page");
 
   return (
@@ -207,6 +207,25 @@ export default function ArticleTemplate4({ article, related }) {
           ))}
         </div>
       </div>
+
+      {/* Related by Topic -- only shown when the article has tags AND at
+          least one other published article shares one, so this section
+          never renders empty/near-empty for an untagged or unique article. */}
+      {relatedByTag?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="w-1 h-5 bg-red-600 shrink-0" />
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase tracking-wide text-gray-900 dark:text-gray-100">
+              Related by Topic
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+            {relatedByTag.map((a) => (
+              <ArticleCard key={a.id} article={a} />
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

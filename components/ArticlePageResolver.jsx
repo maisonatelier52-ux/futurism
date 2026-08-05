@@ -7,6 +7,8 @@ import ArticleTemplate1 from "./article-templates/ArticleTemplate1";
 import ArticleTemplate2 from "./article-templates/ArticleTemplate2";
 import ArticleTemplate3 from "./article-templates/ArticleTemplate3";
 import ArticleTemplate4 from "./article-templates/ArticleTemplate4";
+import ViewTracker from "./ViewTracker";
+import ReadingProgressBar from "./ReadingProgressBar";
 
 const TEMPLATES = {
   "variation-1": ArticleTemplate1,
@@ -28,6 +30,11 @@ export function normalizeArticle(raw) {
     categorySlug: raw.categorySlug || "",
     categoryHref: raw.categorySlug ? `/category/${raw.categorySlug}` : "",
     tag: (raw.tags && raw.tags[0]) || "",
+    // Full tags array, kept alongside the single display `tag` above --
+    // needed for tag-overlap related-article matching (resolveArticleRelated
+    // in lib/resolveArticleQuery.js), which the single first-tag value
+    // can't support on its own.
+    tags: raw.tags || [],
     title: raw.title || "",
     excerpt: raw.excerpt || "",
     author: {
@@ -52,10 +59,10 @@ export default function ArticlePageResolver({ article, related }) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6 py-24 text-center">
         <div>
-          <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl font-black uppercase text-gray-900 mb-2">
+          <h1 className="font-[family-name:var(--font-owners-xnarrow)] text-3xl font-black uppercase text-gray-900 dark:text-gray-100 mb-2">
             Article not found
           </h1>
-          <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500">
+          <p className="font-[family-name:var(--font-owners-text)] text-sm text-gray-500 dark:text-gray-400">
             This article may have been unpublished or the link is incorrect.
           </p>
         </div>
@@ -66,5 +73,11 @@ export default function ArticlePageResolver({ article, related }) {
   const variation = article.layoutVariation || "variation-4";
   const ActiveTemplate = TEMPLATES[variation] || ArticleTemplate4;
 
-  return <ActiveTemplate article={article} related={related || { mostPopular: [], aroundTheWeb: [], moreInCategory: [] }} />;
+  return (
+    <>
+      <ReadingProgressBar />
+      <ViewTracker slug={article.slug} />
+      <ActiveTemplate article={article} related={related || { mostPopular: [], aroundTheWeb: [], moreInCategory: [] }} />
+    </>
+  );
 }

@@ -1,11 +1,15 @@
 'use client';
 // Template 3: Large logo + search + weather/social right, full-width nav row below
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import SocialIcons from './SocialIcons';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 
 export default function HeaderTemplate3({ config }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
   const c = config || DEFAULT_HEADER_CONFIG;
   const allLinks = [...(c.mainLinks || []), ...(c.secondaryLinks || [])];
   const surfaceVars = { '--hdr-bg': c.bgColor, '--hdr-fg': c.textColor };
@@ -13,6 +17,12 @@ export default function HeaderTemplate3({ config }) {
   // fg=bgColor) -- its own swapped variable pairing keeps that contrast
   // relationship correct in dark mode too, rather than reusing --hdr-bg/fg.
   const ctaVars = { '--hdr-bg': c.textColor, '--hdr-fg': c.bgColor };
+
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
+  }
 
   return (
     <header className="header-surface z-40 border-b border-gray-200 dark:border-gray-800" style={surfaceVars}>
@@ -27,13 +37,14 @@ export default function HeaderTemplate3({ config }) {
           {/* Logo */}
           <img src={c.logo} alt="Futurism" className="h-10 md:h-14 w-auto flex-shrink-0 dark:invert" />
           {/* Search — hidden on small mobile, shown md+ */}
-          <div className="hidden sm:flex flex-1 max-w-xl relative">
+          <form onSubmit={handleSearchSubmit} className="hidden sm:flex flex-1 max-w-xl relative">
             <input type="text" placeholder="Search the future..."
+              value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-9 md:h-10 pl-4 pr-10 border border-gray-300 dark:border-gray-700 rounded-full text-sm focus:outline-none bg-white dark:bg-[#1c1c24] dark:text-gray-100" />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+            <button type="submit" aria-label="Search" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
             </button>
-          </div>
+          </form>
           {/* Weather + social */}
           <div className="ml-auto flex items-center gap-3 flex-shrink-0">
             {c.showWeather && (
@@ -45,10 +56,13 @@ export default function HeaderTemplate3({ config }) {
             )}
             <div className="hidden sm:block w-px h-5 bg-gray-200 dark:bg-gray-700" />
             <SocialIcons links={c.socialLinks} size="sm" />
-            {/* Mobile search icon */}
-            <button className="header-fg sm:hidden p-1.5">
+            {/* Mobile search icon -- no room for the full search box at
+                this width, so this links straight to the search page
+                instead (the other 6 header templates follow this same
+                pattern for their search icon). */}
+            <Link href="/search" className="header-fg sm:hidden p-1.5">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

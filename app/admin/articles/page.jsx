@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Plus, Edit2, Trash2, X, Save, AlertCircle, Search,
   Upload, Trash, Eye, FileText, Hash, Image, AlignLeft,
   Calendar, Clock, List, HelpCircle, Newspaper, ChevronUp, ChevronDown,
 } from "lucide-react";
 import AdminShell from "@/components/layout/AdminShell";
+import SeoPreviewCard from "@/components/admin/SeoPreviewCard";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import {
-  getCategories, getArticles, saveArticle, deleteArticle, uploadImage,
+  getCategories, getArticles, getArticleById, saveArticle, deleteArticle, uploadImage,
 } from "@/lib/categoriesArticlesApi";
 import { ARTICLE_LAYOUT_OPTIONS, DEFAULT_SAGA_SO_FAR } from "@/lib/articleTemplateDefaults";
 
@@ -376,7 +378,7 @@ const EMPTY_FORM = {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 
-export default function ArticlesPage() {
+function ArticlesPageInner() {
   const [articles,       setArticles]       = useState([]);
   const [filtered,       setFiltered]       = useState([]);
   const [search,         setSearch]         = useState("");
@@ -420,6 +422,24 @@ export default function ArticlesPage() {
   }, [selectedCat]);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+
+  // Deep-link support: /admin/articles?edit=<id> (used by the Topbar's
+  // global search results) opens that article's edit modal directly,
+  // fetched by id rather than assumed to already be in the loaded/
+  // filtered `articles` list -- the search can surface an article outside
+  // the current category filter or page. Clears the param afterward so a
+  // later refresh of the page doesn't reopen the same modal.
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (!editId) return;
+    getArticleById(editId).then((article) => {
+      if (article) openModal(article);
+      router.replace("/admin/articles");
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   useEffect(() => {
     const q = search.toLowerCase();
@@ -585,7 +605,8 @@ export default function ArticlesPage() {
     if (!formData.categoryId)                               e.categoryId      = "Category is required.";
     if (!formData.excerpt.trim())                           e.excerpt         = "Excerpt is required.";
     else if (countWords(formData.excerpt) < 20)             e.excerpt         = `Excerpt needs at least 20 words (currently ${countWords(formData.excerpt)}).`;
-    if (!formData.readTime.trim())                          e.readTime        = "Read time is required.";
+    // readTime is optional -- left blank, the backend auto-calculates it
+    // from the article's actual word count on save.
     if (!formData.metaTitle.trim())                         e.metaTitle       = "Meta title is required.";
     if (!formData.metaDescription.trim())                   e.metaDescription = "Meta description is required.";
     if (!formData.imageAlt.trim())                          e.imageAlt        = "Image alt text is required.";
@@ -943,10 +964,10 @@ export default function ArticlesPage() {
                         onChange={(e) => set({ date: e.target.value })}
                         className={inpCls("date") + " cursor-pointer"} />
                     </FormField>
-                    <FormField label="Read Time" required error={formErrors.readTime}>
+                    <FormField label="Read Time" hint="Leave blank to auto-calculate from the article's content." error={formErrors.readTime}>
                       <input type="text" value={formData.readTime}
                         onChange={(e) => set({ readTime: e.target.value })}
-                        placeholder="e.g. 5 Min Read" className={inpCls("readTime")} />
+                        placeholder="Auto-calculated if left blank" className={inpCls("readTime")} />
                     </FormField>
                     <FormField label="Status">
                       <select value={String(formData.isPublished)}
@@ -1000,6 +1021,17 @@ export default function ArticlesPage() {
                       onChange={(e) => set({ metaDescription: e.target.value })}
                       rows={2} className={inpCls("metaDescription")} />
                   </FormField>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">
+                      Share Preview
+                    </p>
+                    <SeoPreviewCard
+                      title={formData.metaTitle || formData.title}
+                      description={formData.metaDescription || formData.excerpt}
+                      image={mainImgPreview}
+                      slug={formData.slug}
+                    />
+                  </div>
                   <FormField label="Excerpt" required error={formErrors.excerpt}>
                     <textarea
                       value={formData.excerpt}
@@ -1200,5 +1232,16 @@ function ArticleRow({ article, getCategoryName, onEdit, onDelete }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the App Router -- see
+// the same pattern in app/admin/login/page.jsx. Needed here for the
+// ?edit=<id> deep link from the Topbar's global search results.
+export default function ArticlesPage() {
+  return (
+    <Suspense fallback={null}>
+      <ArticlesPageInner />
+    </Suspense>
   );
 }

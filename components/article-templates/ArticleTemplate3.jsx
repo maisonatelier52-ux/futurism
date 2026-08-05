@@ -12,7 +12,7 @@ import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
 import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 export default function ArticleTemplate3({ article, related }) {
-  const { mostPopular, aroundTheWeb, moreInCategory } = related;
+  const { mostPopular, aroundTheWeb, moreInCategory, relatedByTag } = related;
   const headings = extractHeadings(article.body);
   const [showMore, setShowMore] = useState(false);
   const sidebarForm = useNewsletterSubscribe("article-page-sidebar");
@@ -198,6 +198,34 @@ export default function ArticleTemplate3({ article, related }) {
           </div>
         )}
       </div>
+
+      {/* Related by Topic -- only shown when the article has tags AND at
+          least one other published article shares one. Kept separate from
+          the combined Around the Web / More in Category grid above so
+          "here's why we're showing you this" stays clear. */}
+      {relatedByTag?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10 border-t border-gray-200 dark:border-gray-800 pt-8">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="w-1 h-5 bg-red-600 shrink-0" />
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 dark:text-gray-100 break-words">
+              Related by Topic
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-8">
+            {relatedByTag.map((item) => (
+              <a key={item.id} href={item.href || "#"} className="group flex flex-col gap-2">
+                <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                </div>
+                {item.category && (
+                  <span className="font-[family-name:var(--font-scale)] text-[9px] font-semibold uppercase tracking-widest text-red-600">{item.category}</span>
+                )}
+                <h3 className="font-[family-name:var(--font-owners-text)] text-xs leading-snug text-gray-900 dark:text-gray-100 group-hover:underline">{item.title}</h3>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

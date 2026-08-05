@@ -12,7 +12,7 @@ import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
 import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 export default function ArticleTemplate1({ article, related }) {
-  const { mostPopular, aroundTheWeb } = related;
+  const { mostPopular, aroundTheWeb, relatedByTag } = related;
   const saga = article.sagaSoFar?.length ? article.sagaSoFar : DEFAULT_SAGA_SO_FAR;
   const activeSagaIndex = saga.length - 1; // last item highlighted, matching the reference image
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("article-page");
@@ -170,6 +170,24 @@ export default function ArticleTemplate1({ article, related }) {
           ))}
         </div>
       </div>
+
+      {/* Related by Topic -- only shown when the article has tags AND at
+          least one other published article shares one. */}
+      {relatedByTag?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10 border-t border-gray-200 dark:border-gray-800 pt-8">
+          <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 dark:text-gray-100 mb-6 break-words">Related by Topic</h2>
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-x-6 gap-y-8">
+            {relatedByTag.map((item) => (
+              <a key={item.id} href={item.href || "#"} className="group flex flex-col gap-2">
+                <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                </div>
+                <h3 className="font-[family-name:var(--font-owners-text)] text-xs leading-snug text-gray-900 dark:text-gray-100 group-hover:underline">{item.title}</h3>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

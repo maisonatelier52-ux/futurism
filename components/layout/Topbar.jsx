@@ -38,6 +38,11 @@ export default function Topbar({ onMenuClick, title, session }) {
   const router = useRouter();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen,   setNotifOpen]   = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(null); // null = not searched yet
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef(null);
   const [notifications, setNotifications] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef(null);
@@ -95,10 +100,39 @@ export default function Topbar({ onMenuClick, title, session }) {
     function handleClick(e) {
       if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
       if (notifRef.current   && !notifRef.current.contains(e.target))   setNotifOpen(false);
+      if (searchRef.current  && !searchRef.current.contains(e.target))  setSearchOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  // Debounced live search as the person types -- fires the combined
+  // Articles/Authors/Categories search endpoint, not on every keystroke.
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
+      setSearchResults(null);
+      setSearchLoading(false);
+      return;
+    }
+    setSearchLoading(true);
+    const t = setTimeout(async () => {
+      try {
+        const res = await apiFetch(`/api/admin/search?q=${encodeURIComponent(trimmed)}`);
+        const data = res.ok ? await res.json() : { articles: [], authors: [], categories: [] };
+        setSearchResults(data);
+      } catch {
+        setSearchResults({ articles: [], authors: [], categories: [] });
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 350);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  const hasSearchResults =
+    searchResults &&
+    (searchResults.articles.length || searchResults.authors.length || searchResults.categories.length);
 
   async function handleLogout() {
     await apiFetch("/api/admin/auth/logout", { method: "POST" });
@@ -115,13 +149,65 @@ export default function Topbar({ onMenuClick, title, session }) {
         <h1 className="hidden md:block text-[15px] font-semibold text-ink-900 mr-2">{title}</h1>
       )}
 
-      <div className="relative flex-1 max-w-md">
+      <div className="relative flex-1 max-w-md" ref={searchRef}>
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => { setSearchQuery(e.target.value); setSearchOpen(true); }}
+          onFocus={() => setSearchOpen(true)}
           placeholder="Search articles, categories…"
           className="w-full rounded-lg border border-border bg-surface-soft pl-9 pr-3 py-2 text-[13.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition"
         />
+        {searchOpen && searchQuery.trim() && (
+          <div className="absolute left-0 right-0 mt-2 rounded-card border border-border bg-white shadow-lift overflow-hidden z-30 max-h-96 overflow-y-auto">
+            {searchLoading ? (
+              <p className="px-4 py-4 text-[12.5px] text-ink-400">Searching…</p>
+            ) : !hasSearchResults ? (
+              <p className="px-4 py-4 text-[12.5px] text-ink-400">No results for "{searchQuery.trim()}"</p>
+            ) : (
+              <>
+                {searchResults.articles.length > 0 && (
+                  <div>
+                    <p className="px-4 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-ink-400">Articles</p>
+                    {searchResults.articles.map((a) => (
+                      <Link key={a.id} href={a.editHref} onClick={() => setSearchOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 hover:bg-surface-soft">
+                        <Newspaper size={13} className="text-ink-400 shrink-0" />
+                        <span className="text-[13px] text-ink-900 truncate">{a.title}</span>
+                        {!a.isPublished && <span className="text-[10px] text-ink-400 shrink-0">Draft</span>}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {searchResults.authors.length > 0 && (
+                  <div>
+                    <p className="px-4 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-ink-400">Authors</p>
+                    {searchResults.authors.map((a) => (
+                      <Link key={a.id} href={a.editHref} onClick={() => setSearchOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 hover:bg-surface-soft">
+                        <User size={13} className="text-ink-400 shrink-0" />
+                        <span className="text-[13px] text-ink-900 truncate">{a.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {searchResults.categories.length > 0 && (
+                  <div>
+                    <p className="px-4 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-ink-400">Categories</p>
+                    {searchResults.categories.map((c) => (
+                      <Link key={c.id} href={c.editHref} onClick={() => setSearchOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 hover:bg-surface-soft pb-2.5">
+                        <FolderTree size={13} className="text-ink-400 shrink-0" />
+                        <span className="text-[13px] text-ink-900 truncate">{c.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex-1" />

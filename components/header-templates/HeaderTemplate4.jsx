@@ -1,6 +1,7 @@
 'use client';
 // Template 4: Dark theme + breaking news bar
 import { useState } from 'react';
+import Link from 'next/link';
 import SocialIcons from './SocialIcons';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 
@@ -27,9 +28,9 @@ export default function HeaderTemplate4({ config }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2 flex-shrink-0">
-            <button className="p-1.5 text-white/70 hover:text-white">
+            <Link href="/search" className="p-1.5 text-white/70 hover:text-white">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
-            </button>
+            </Link>
             <div className="hidden sm:block w-px h-5 bg-white/20" />
             <div className="hidden sm:block">
               <SocialIcons links={c.socialLinks} dark={true} />

@@ -11,7 +11,7 @@ import { useNewsletterSubscribe } from "@/lib/useNewsletterSubscribe";
 import NewsletterStatus from "@/components/shared/NewsletterStatus";
 
 export default function ArticleTemplate2({ article, related }) {
-  const { mostPopular, aroundTheWeb, moreInCategory } = related;
+  const { mostPopular, aroundTheWeb, moreInCategory, relatedByTag } = related;
   const readNext = (related.moreInCategory || []).slice(0, 2);
   const { email, setEmail, status, message, submit } = useNewsletterSubscribe("article-page");
 
@@ -195,6 +195,35 @@ export default function ArticleTemplate2({ article, related }) {
           ))}
         </div>
       </div>
+
+      {/* Related by Topic -- only shown when the article has tags AND at
+          least one other published article shares one. */}
+      {relatedByTag?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pb-10">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="w-1 h-5 bg-red-600 shrink-0" />
+            <h2 className="font-[family-name:var(--font-owners-xnarrow)] text-xl font-black uppercase text-gray-900 dark:text-gray-100 break-words">
+              Related by Topic
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-8">
+            {relatedByTag.map((item) => (
+              <div key={item.id} className="group flex flex-col gap-2">
+                <a href={item.href || "#"} className="flex flex-col gap-2">
+                  <div className="w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-[#1c1c24]">
+                    <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                  </div>
+                  <span className="font-[family-name:var(--font-scale)] text-[9px] font-semibold uppercase tracking-widest text-red-600">{item.category}</span>
+                  <h3 className="font-[family-name:var(--font-owners-xnarrow)] text-sm font-black uppercase leading-tight text-gray-900 dark:text-gray-100 group-hover:underline break-words">{item.title}</h3>
+                </a>
+                <p className="font-[family-name:var(--font-owners-text)] text-[11px] text-gray-500 dark:text-gray-400">
+                  <AuthorByline author={item.author} authorHref={item.authorHref} />
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

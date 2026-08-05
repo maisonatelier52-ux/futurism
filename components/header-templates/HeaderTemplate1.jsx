@@ -1,6 +1,7 @@
 'use client';
 // Template 1: Original Futurism — logo left, 2-row nav, social icons right
 import { useState } from 'react';
+import Link from 'next/link';
 import SocialIcons from './SocialIcons';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 
@@ -34,9 +35,9 @@ export default function HeaderTemplate1({ config }) {
             ))}
           </nav>
           <div className="flex items-center gap-4 flex-shrink-0">
-            <button className="header-fg p-2 hover:opacity-70">
+            <Link href="/search" className="header-fg p-2 hover:opacity-70">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
-            </button>
+            </Link>
             <div className="pl-3 border-l border-gray-300 dark:border-gray-700">
               <SocialIcons links={c.socialLinks} />
             </div>
@@ -59,9 +60,9 @@ export default function HeaderTemplate1({ config }) {
             {menuOpen ? '✕' : '☰'}
           </button>
           <img src={c.logo} alt="Futurism" className="h-8 w-auto dark:invert" />
-          <button className="header-fg p-2 hover:opacity-70">
+          <Link href="/search" className="header-fg p-2 hover:opacity-70">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
-          </button>
+          </Link>
         </div>
         {menuOpen && (
           <div className="header-surface border-t border-gray-200 dark:border-gray-800 px-4 pb-4" style={surfaceVars}>

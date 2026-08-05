@@ -1,6 +1,7 @@
 'use client';
 // Template 5: Centered logo, split nav left/right, utility bar below
 import { useState } from 'react';
+import Link from 'next/link';
 import SocialIcons from './SocialIcons';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 
@@ -47,9 +48,9 @@ export default function HeaderTemplate5({ config }) {
             ))}
           </nav>
           {/* Search */}
-          <button className="header-fg p-1.5 flex-shrink-0 hover:opacity-70">
+          <Link href="/search" className="header-fg p-1.5 flex-shrink-0 hover:opacity-70">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/></svg>
-          </button>
+          </Link>
         </div>
         {/* Secondary links row — desktop */}
         {(c.secondaryLinks || []).length > 0 && (
