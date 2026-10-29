@@ -12,6 +12,7 @@ import HeaderTemplate6 from './header-templates/HeaderTemplate6';
 import HeaderTemplate7 from './header-templates/HeaderTemplate7';
 import { DEFAULT_HEADER_CONFIG } from '@/lib/headerDefaults';
 import { API_BASE } from '@/lib/apiConfig';
+import { serverFetch } from '@/lib/serverFetch';
 import ThemeToggle from './theme/ThemeToggle';
 
 const TEMPLATES = {
@@ -26,7 +27,7 @@ const TEMPLATES = {
 
 async function getHeaderConfig() {
   try {
-    const res = await fetch(`${API_BASE}/api/header`, { cache: 'no-store' });
+    const res = await serverFetch(`${API_BASE}/api/header`, { timeoutMs: 4000 });
     if (!res.ok) return DEFAULT_HEADER_CONFIG;
     const d = await res.json();
     return d.config || DEFAULT_HEADER_CONFIG;

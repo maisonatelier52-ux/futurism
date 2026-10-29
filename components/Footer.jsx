@@ -10,6 +10,7 @@ import FooterTemplate5 from './footer-templates/FooterTemplate5';
 import FooterTemplate6 from './footer-templates/FooterTemplate6';
 import { DEFAULT_FOOTER_CONFIG } from '@/lib/footerDefaults';
 import { API_BASE } from '@/lib/apiConfig';
+import { serverFetch } from '@/lib/serverFetch';
 
 const TEMPLATES = {
   'template-1': FooterTemplate1,
@@ -22,7 +23,7 @@ const TEMPLATES = {
 
 async function getFooterConfig() {
   try {
-    const res = await fetch(`${API_BASE}/api/footer`, { cache: 'no-store' });
+    const res = await serverFetch(`${API_BASE}/api/footer`, { timeoutMs: 4000 });
     if (!res.ok) return DEFAULT_FOOTER_CONFIG;
     const d = await res.json();
     return d.config || DEFAULT_FOOTER_CONFIG;
