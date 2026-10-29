@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { apiFetch } from '@/lib/apiConfig';
+import { apiFetch, warmBackend } from '@/lib/apiConfig';
+import { clearCachedSession } from '@/lib/adminSession';
 import { firstAccessibleHref, PERMISSION_ITEMS, canAccess } from '@/lib/permissions';
 
 function LoginForm() {
@@ -12,6 +13,14 @@ function LoginForm() {
   const [form, setForm]     = useState({ username: '', password: '' });
   const [error, setError]   = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Landing here means any previous session is gone (logout / expired /
+  // never logged in) -- drop the cached one, and ping the backend now so a
+  // sleeping Render instance is already waking up while the person types.
+  useEffect(() => {
+    clearCachedSession();
+    warmBackend();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,8 +31,9 @@ function LoginForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
+        timeoutMs: 60000, // covers a cold Render backend
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) { setError(data.error || 'Login failed'); return; }
       const requestedNext = searchParams.get('next');
       const permissions = data.permissions ?? null;
@@ -36,8 +46,12 @@ function LoginForm() {
       const matchedItem = PERMISSION_ITEMS.find((item) => requestedNext?.startsWith(item.href));
       const canReachNext = requestedNext && matchedItem && canAccess(permissions, matchedItem.key);
       router.push(canReachNext ? requestedNext : firstAccessibleHref(permissions));
-    } catch {
-      setError('Network error');
+    } catch (err) {
+      setError(
+        err?.name === 'AbortError'
+          ? 'The server is taking too long to respond (it may be waking up). Please try again in a moment.'
+          : 'Network error — could not reach the server.'
+      );
     } finally {
       setLoading(false);
     }
